@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { showToast } from '../Components/Toast';
-import Home from '../Pages/Home';
-import Products from '../Pages/Products';
-import Login from '../Pages/Login';
-import Signup from '../Pages/Signup';
-import ForgotPassword from '../Pages/ForgotPassword';
-import Profile from '../Pages/Profile';
-import Admin from '../Pages/Admin';
-import About from '../Pages/About';
-import Contact from '../Pages/Contact';
-import Faq from '../Pages/Faq';
-import Privacy from '../Pages/Privacy';
-import Terms from '../Pages/Terms';
-import Cart from '../Pages/Cart';
-import Checkout from '../Pages/Checkout';
-import OrderSuccess from '../Pages/OrderSuccess';
-import Navbar from '../Components/Navbar';
-import Footer from '../Components/Footer';
+import { showToast } from '../components/Toast';
+import Home from '../pages/Home';
+import Products from '../pages/Products';
+import Login from '../pages/Login';
+import Signup from '../pages/Signup';
+import ForgotPassword from '../pages/ForgotPassword';
+import Profile from '../pages/Profile';
+import Admin from '../pages/Admin';
+import About from '../pages/About';
+import Contact from '../pages/Contact';
+import Faq from '../pages/Faq';
+import Privacy from '../pages/Privacy';
+import Terms from '../pages/Terms';
+import Cart from '../pages/Cart';
+import Checkout from '../pages/Checkout';
+import OrderSuccess from '../pages/OrderSuccess';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 // Layout wrapper to conditionally render Navbar and Footer (hiding on Admin pages)
 const AppLayout = ({ children }) => {

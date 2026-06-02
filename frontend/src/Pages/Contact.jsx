@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getJSON, setJSON, STORAGE_KEYS } from '../utils/storage';
-import { showToast } from '../Components/Toast';
+import { showToast } from '../components/Toast';
 
 const Contact = () => {
   const handleSubmit = (e) => {

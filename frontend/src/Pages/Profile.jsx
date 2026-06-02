@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getOrdersForUser, formatOrderDate } from '../utils/orders';
 import { getAddressesForUser, deleteAddress, seedDefaultAddresses } from '../utils/addresses';
-import { showToast } from '../Components/Toast';
+import { showToast } from '../components/Toast';
 
 const Profile = () => {
   const navigate = useNavigate();

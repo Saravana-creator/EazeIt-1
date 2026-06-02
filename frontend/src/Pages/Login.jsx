@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { showToast } from '../Components/Toast';
+import { showToast } from '../components/Toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');

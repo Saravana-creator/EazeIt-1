@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { showToast } from '../Components/Toast';
+import { showToast } from '../components/Toast';
 
 // ── Static hardcoded products ──────────────────────────────────────────────
 const STATIC_PRODUCTS = [

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { getActiveUser } from '../utils/storage';
-import { showToast } from '../Components/Toast';
+import { showToast } from '../components/Toast';
 
 const Cart = () => {
   const navigate = useNavigate();

@@ -9,7 +9,7 @@ import {
   seedDefaultAddresses,
 } from '../utils/addresses';
 import { generateOrderId, saveOrder } from '../utils/orders';
-import { showToast } from '../Components/Toast';
+import { showToast } from '../components/Toast';
 
 const initialAddress = {
   label: 'HOME',

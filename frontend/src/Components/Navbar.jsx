@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { showToast } from './Toast';
 
 const Navbar = ({ user, handleLogout }) => {
   const [searchText, setSearchText] = useState('');
