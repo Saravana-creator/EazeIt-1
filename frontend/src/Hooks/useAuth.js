@@ -1,5 +1,5 @@
 /**
- * src/hooks/useAuth.js
+ * src/Hooks/useAuth.js
  * --------------------
  * Custom hook for reading and managing the active user session.
  *

@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../hooks';
+import { useCart } from '../Context/CartContext';
+import { useAuth } from '../Hooks';
 import { showToast } from './Toast';
-import { resolveProductImage } from '../utils/image';
+import { resolveProductImage } from '../Utils/image';
 
 const CAT_EMOJI = {
   'Oral Care': '🦷',

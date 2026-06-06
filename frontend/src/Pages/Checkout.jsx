@@ -1,16 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../hooks';
+import { useCart } from '../Context/CartContext';
+import { useAuth } from '../Hooks';
 import {
   getAddressesForUser,
   addAddress,
   getDefaultAddress,
   seedDefaultAddresses,
-} from '../utils/addresses';
-import { generateOrderId, saveOrder } from '../utils/orders';
-import { showToast } from '../components/Toast';
-import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment } from '../utils/api';import { resolveProductImage } from '../utils/image';
+} from '../Utils/addresses';
+import { generateOrderId, saveOrder } from '../Utils/orders';
+import { showToast } from '../Components/Toast';
+import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment } from '../Utils/api';import { resolveProductImage } from '../Utils/image';
 /** Dynamically loads the Razorpay checkout script */
 function loadRazorpayScript() {
   return new Promise((resolve) => {

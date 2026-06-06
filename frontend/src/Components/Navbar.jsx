@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../hooks';
+import { useCart } from '../Context/CartContext';
+import { useAuth } from '../Hooks';
 import { showToast } from './Toast';
 import { muiLogo } from '../Assets';
 

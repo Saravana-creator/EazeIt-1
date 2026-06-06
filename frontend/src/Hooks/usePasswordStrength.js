@@ -1,5 +1,5 @@
 /**
- * src/hooks/usePasswordStrength.js
+ * src/Hooks/usePasswordStrength.js
  * ---------------------------------
  * Custom hook that evaluates password strength reactively.
  *

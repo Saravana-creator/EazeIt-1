@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getJSON, setJSON, STORAGE_KEYS } from '../utils/storage';
+import { getJSON, setJSON, STORAGE_KEYS } from '../Utils/storage';
 import { SEED_PRODUCTS } from '../Assets';
-import { apiGetProducts, apiAddProduct, apiUpdateProduct, apiDeleteProduct } from '../utils/api';
-import { showToast } from '../components/Toast';
+import { apiGetProducts, apiAddProduct, apiUpdateProduct, apiDeleteProduct } from '../Utils/api';
+import { showToast } from '../Components/Toast';
 
 const ProductContext = createContext(null);
 

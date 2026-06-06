@@ -14,10 +14,10 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks';
-import { usePasswordStrength } from '../hooks';
-import { showToast } from '../components/Toast';
-import { apiSignUp } from '../utils/api';
+import { useAuth } from '../Hooks';
+import { usePasswordStrength } from '../Hooks';
+import { showToast } from '../Components/Toast';
+import { apiSignUp } from '../Utils/api';
 
 /* ─── Eye toggle button — receives props: visible, onToggle, id ─────────── */
 const EyeButton = ({ visible, onToggle, id }) => (

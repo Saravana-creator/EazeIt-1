@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useProducts } from '../context/ProductContext';
-import { useAuth } from '../hooks';
-import { showToast } from '../components/Toast';
-import { resolveProductImage } from '../utils/image';
+import { useProducts } from '../Context/ProductContext';
+import { useAuth } from '../Hooks';
+import { showToast } from '../Components/Toast';
+import { resolveProductImage } from '../Utils/image';
 import {
   apiGetAllOrders,
   apiGetOrderStats,
   apiGetAllUsers,
   apiGetUserStats,
   apiUpdateOrderStatus,
-} from '../utils/api';
+} from '../Utils/api';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const CAT_EMOJI = {

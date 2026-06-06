@@ -10,9 +10,9 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks';
-import { showToast } from '../components/Toast';
-import { apiLogin } from '../utils/api';
+import { useAuth } from '../Hooks';
+import { showToast } from '../Components/Toast';
+import { apiLogin } from '../Utils/api';
 
 /* ── Eye SVG sub-components (pure UI, no state) ─────────────────────────── */
 const EyeOpen = () => (

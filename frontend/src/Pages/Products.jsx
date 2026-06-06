@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useProducts } from '../context/ProductContext';
-import ProductCard from '../components/ProductCard';
+import { useProducts } from '../Context/ProductContext';
+import ProductCard from '../Components/ProductCard';
 
 const CATEGORIES = ['All Products', 'Oral Care', 'Household', 'Bath & Body', 'Food & Snacks', 'Personal Care', 'Beverages', 'Dairy', 'Others'];
 

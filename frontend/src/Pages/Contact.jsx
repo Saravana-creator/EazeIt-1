@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks';
-import { apiSendFeedback } from '../utils/api';
-import { getJSON, setJSON, STORAGE_KEYS } from '../utils/storage';
-import { showToast } from '../components/Toast';
+import { useAuth } from '../Hooks';
+import { apiSendFeedback } from '../Utils/api';
+import { getJSON, setJSON, STORAGE_KEYS } from '../Utils/storage';
+import { showToast } from '../Components/Toast';
 
 /*
  * Contact Page Component

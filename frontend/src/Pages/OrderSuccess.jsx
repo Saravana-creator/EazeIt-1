@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getOrderById, formatOrderDate } from '../utils/orders';
-import { useAuth } from '../hooks';
+import { getOrderById, formatOrderDate } from '../Utils/orders';
+import { useAuth } from '../Hooks';
 
 /*
  * OrderSuccess Page Component

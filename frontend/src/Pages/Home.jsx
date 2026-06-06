@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useProducts } from '../context/ProductContext';
-import { resolveProductImage } from '../utils/image';
-import ProductCard from '../components/ProductCard';
+import { useProducts } from '../Context/ProductContext';
+import { resolveProductImage } from '../Utils/image';
+import ProductCard from '../Components/ProductCard';
 
 /**
  * Home Page

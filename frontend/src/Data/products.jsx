@@ -1,4 +1,4 @@
-import { getJSON, STORAGE_KEYS } from '../utils/storage';
+import { getJSON, STORAGE_KEYS } from '../Utils/storage';
 import { colgate, harpic, godrejSoap } from '../Assets';
 
 // ── Static seed products (always available) ───────────────────────────────────

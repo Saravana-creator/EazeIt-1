@@ -9,11 +9,11 @@
  */
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { getOrdersForUser, formatOrderDate } from '../utils/orders';
-import { getAddressesForUser, deleteAddress } from '../utils/addresses';
-import { useAuth } from '../hooks';
-import { showToast } from '../components/Toast';
-import { apiUpdateProfile, apiGetUserOrders } from '../utils/api';
+import { getOrdersForUser, formatOrderDate } from '../Utils/orders';
+import { getAddressesForUser, deleteAddress } from '../Utils/addresses';
+import { useAuth } from '../Hooks';
+import { showToast } from '../Components/Toast';
+import { apiUpdateProfile, apiGetUserOrders } from '../Utils/api';
 
 const Profile = () => {
   const navigate = useNavigate();

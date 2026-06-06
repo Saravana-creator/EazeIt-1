@@ -1,5 +1,5 @@
 /**
- * src/data/products.js
+ * src/Data/products.js
  * --------------------
  * Utility functions for product-related operations.
  * The actual product list lives in ProductContext (localStorage-backed).

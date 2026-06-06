@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { getJSON, setJSON, STORAGE_KEYS, calcDeliveryFee } from '../utils/storage';
-import { cartItemFromProduct } from '../data/products';
+import { getJSON, setJSON, STORAGE_KEYS, calcDeliveryFee } from '../Utils/storage';
+import { cartItemFromProduct } from '../Data/products';
 
 const CartContext = createContext(null);
 

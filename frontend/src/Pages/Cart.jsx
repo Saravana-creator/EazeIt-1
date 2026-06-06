@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../hooks';
-import { showToast } from '../components/Toast';
-import { resolveProductImage } from '../utils/image';
+import { useCart } from '../Context/CartContext';
+import { useAuth } from '../Hooks';
+import { showToast } from '../Components/Toast';
+import { resolveProductImage } from '../Utils/image';
 
 const Cart = () => {
   const navigate = useNavigate();

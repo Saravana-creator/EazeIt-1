@@ -14,8 +14,8 @@
  */
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { usePasswordStrength } from '../hooks';
-import { showToast } from '../components/Toast';
+import { usePasswordStrength } from '../Hooks';
+import { showToast } from '../Components/Toast';
 
 /* ─── Eye toggle button — receives props: visible, onToggle, id ─────────── */
 const EyeButton = ({ visible, onToggle, id }) => (
