@@ -138,13 +138,35 @@ REACT_APP_EMAILJS_USER_ID=<your-emailjs-user-id>
 
 ## 📦 Production Build
 
-From the frontend folder:
+From the repository root, install both sides and build the frontend:
 
 ```bash
+npm install-all
 npm run build
 ```
 
-Then start the backend server. In production mode, `backend/Server.js` serves the compiled frontend from `frontend/build`.
+Then start the backend server from the repository root:
+
+```bash
+npm start
+```
+
+If you prefer to build manually from the frontend folder:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+Then start the backend server from `backend`:
+
+```bash
+cd ../backend
+npm start
+```
+
+In production mode, `backend/Server.js` serves the compiled frontend from `frontend/build`.
 
 ## 💡 Notes
 

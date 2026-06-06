@@ -22,9 +22,6 @@ const CATEGORY_SHOWCASES = [
   { label: 'Personal Care', catKey: 'Personal Care', emoji: '💊' },
 ];
 
-// How many cards visible per slide depending on screen — we chunk products
-const CHUNK_SIZE = 3; // shown on desktop; carousel always chunks by 1 on mobile
-
 /* ─── Auto-rotating Carousel Component ───────────────────────────────────── */
 const ProductCarousel = ({ products }) => {
   const [current, setCurrent] = useState(0);

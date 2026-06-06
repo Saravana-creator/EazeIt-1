@@ -2,6 +2,8 @@ const express    = require("express");
 const mongoose   = require("mongoose");
 const cors       = require("cors");
 const rateLimit  = require("express-rate-limit");
+const helmet     = require("helmet");
+const compression= require("compression");
 const dns        = require("dns");
 const path       = require("path");
 
@@ -26,8 +28,11 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000")
 // e.g. ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app
 
 // ── Middleware ───────────────────────────────────────────────────────────────
+app.set("trust proxy", 1);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(compression());
 
 app.use(
   cors({
@@ -149,3 +154,11 @@ mongoose
 // ── Graceful Shutdown ────────────────────────────────────────────────────────
 process.on("SIGINT",  () => { console.log("\n👋 Server stopping…"); mongoose.connection.close(); process.exit(0); });
 process.on("SIGTERM", () => { console.log("\n👋 Server stopping…"); mongoose.connection.close(); process.exit(0); });
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ Unhandled Rejection:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("❌ Uncaught Exception:", err);
+  process.exit(1);
+});
