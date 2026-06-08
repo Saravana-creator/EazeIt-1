@@ -16,10 +16,77 @@ import ProductCard from '../Components/ProductCard';
  */
 
 const CATEGORY_SHOWCASES = [
-  { label: 'Oral Care',     catKey: 'Oral Care',     emoji: '🦷' },
-  { label: 'Household',     catKey: 'Household',     emoji: '🧹' },
-  { label: 'Bath & Body',   catKey: 'Bath & Body',   emoji: '🧼' },
-  { label: 'Personal Care', catKey: 'Personal Care', emoji: '💊' },
+  { label: 'Oral Care',     catKey: 'Oral Care' },
+  { label: 'Household',     catKey: 'Household' },
+  { label: 'Bath & Body',   catKey: 'Bath & Body' },
+  { label: 'Personal Care', catKey: 'Personal Care' },
+];
+
+const CAT_SVG = {
+  'Oral Care': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-8 h-8 text-teal-400">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 3C7.343 3 6 4.343 6 6v6c0 3.314 2.686 6 6 6s6-2.686 6-6V6c0-1.657-1.343-3-3-3H9z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6" />
+    </svg>
+  ),
+  'Household': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-8 h-8 text-teal-400">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.75L12 3l9 6.75V21H3V9.75z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9" />
+    </svg>
+  ),
+  'Bath & Body': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-8 h-8 text-teal-400">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a5 5 0 0 1 10 0M5 20h14M12 4v4m-3-2 1.5 2M15 2l-1.5 4" />
+    </svg>
+  ),
+  'Personal Care': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-8 h-8 text-teal-400">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zM4 22c0-4.418 3.582-8 8-8s8 3.582 8 8" />
+    </svg>
+  ),
+};
+
+const FEATURES = [
+  {
+    title: 'Free Delivery',
+    sub: 'On orders above Rs. 299',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1m8-1a1 1 0 0 1-1 1H9m4-1V8a1 1 0 0 1 1-1h2.586a1 1 0 0 1 .707.293l3.414 3.414a1 1 0 0 1 .293.707V16a1 1 0 0 1-1 1h-1m-6-1a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm6 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Secure Payments',
+    sub: 'UPI, Cards & COD',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 1l9 4v6c0 5.25-3.75 10.15-9 11.5C6.75 21.15 3 16.25 3 11V5l9-4z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Genuine Products',
+    sub: '100% authentic',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
+        <circle cx="12" cy="12" r="10" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Easy Returns',
+    sub: '7-day hassle-free',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M20 20v-5h-5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20.49 9A9 9 0 0 0 5.64 5.64L4 4m16 16-1.64-1.64A9 9 0 0 1 3.51 15" />
+      </svg>
+    ),
+  },
 ];
 
 /* ─── Auto-rotating Carousel Component ───────────────────────────────────── */
@@ -161,8 +228,11 @@ const Home = () => {
 
             {/* Left column */}
             <div className="col-lg-6">
-              <div className="inline-block bg-teal-400/10 border border-teal-400/20 text-teal-400 font-semibold text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-5">
-                🛒 Now Delivering Near You
+              <div className="inline-flex items-center gap-2 bg-teal-400/10 border border-teal-400/20 text-teal-400 font-semibold text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-5">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{width:'13px',height:'13px'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1m8-1a1 1 0 0 1-1 1H9m4-1V8a1 1 0 0 1 1-1h2.586a1 1 0 0 1 .707.293l3.414 3.414a1 1 0 0 1 .293.707V16a1 1 0 0 1-1 1h-1m-6-1a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm6 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+                </svg>
+                Now Delivering Near You
               </div>
               <h1 className="font-serif font-extrabold text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-5">
                 Fresh Groceries,<br />
@@ -210,7 +280,9 @@ const Home = () => {
                       {p.image ? (
                         <img src={resolveProductImage(p.image)} alt={p.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                       ) : (
-                        <span className="text-5xl">{['🦷', '🧹', '🧼', '💊', '📦'][i] || '📦'}</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 text-slate-600">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                        </svg>
                       )}
                     </div>
                   </div>
@@ -218,7 +290,9 @@ const Home = () => {
                 {products.length === 0 && (
                   <div className="col-12">
                     <div className="rounded-xl border border-slate-700 bg-slate-800 h-60 flex flex-col items-center justify-center gap-3">
-                      <span className="text-5xl">🛒</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-14 h-14 text-slate-600">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" />
+                      </svg>
                       <p className="text-slate-400 text-sm">Products loading…</p>
                     </div>
                   </div>
@@ -234,14 +308,9 @@ const Home = () => {
       <div className="bg-slate-800 border-y border-slate-700 py-5">
         <div className="container-xl px-4">
           <div className="flex flex-wrap justify-around items-center gap-6">
-            {[
-              { icon: '🚚', title: 'Free Delivery',    sub: 'On orders above Rs. 299' },
-              { icon: '🔒', title: 'Secure Payments',  sub: 'UPI, Cards & COD' },
-              { icon: '✅', title: 'Genuine Products', sub: '100% authentic' },
-              { icon: '🔄', title: 'Easy Returns',     sub: '7-day hassle-free' },
-            ].map(({ icon, title, sub }) => (
+            {FEATURES.map(({ icon, title, sub }) => (
               <div key={title} className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-teal-400/10 border border-teal-400/25 rounded-xl flex items-center justify-center text-2xl shrink-0">{icon}</div>
+                <div className="w-12 h-12 bg-teal-400/10 border border-teal-400/25 rounded-xl flex items-center justify-center text-teal-400 shrink-0">{icon}</div>
                 <div>
                   <div className="text-sm font-bold text-white">{title}</div>
                   <div className="text-xs text-slate-400 mt-0.5">{sub}</div>
@@ -273,7 +342,7 @@ const Home = () => {
                       {sample ? (
                         <img src={resolveProductImage(sample.image)} alt={cat.label} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-4xl">{cat.emoji}</span>
+                        CAT_SVG[cat.catKey] || <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-8 h-8 text-teal-400"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
                       )}
                     </div>
                     <div className="text-base font-semibold text-white group-hover:text-teal-400 transition-colors">{cat.label}</div>
@@ -298,7 +367,9 @@ const Home = () => {
 
           {products.length === 0 ? (
             <div className="text-center py-16 flex flex-col items-center gap-4">
-              <span className="text-6xl">📦</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-slate-600">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              </svg>
               <h3 className="text-white font-bold text-xl">No Products Available</h3>
               <p className="text-slate-400 text-sm">Please check back later — we are restocking our catalog.</p>
             </div>

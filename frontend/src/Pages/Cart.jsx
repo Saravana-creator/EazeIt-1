@@ -53,7 +53,11 @@ const Cart = () => {
         <div className="max-w-7xl mx-auto">
           {cartItems.length === 0 ? (
             <div className="bg-slate-800 border border-slate-700 rounded-xl p-10 text-center">
-              <div className="text-5xl mb-3">🛒</div>
+              <div className="flex justify-center mb-3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-14 h-14 text-slate-600">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" />
+                </svg>
+              </div>
               <h3 className="text-xl font-bold text-white mb-2">Your cart is empty</h3>
               <p className="text-slate-400 text-sm mb-6">Add some groceries to get started.</p>
               <Link to="/products" className="inline-block bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-3 rounded-lg transition-all duration-200 active:scale-95">
@@ -69,7 +73,9 @@ const Cart = () => {
                       {item.image ? (
                         <img src={resolveProductImage(item.image)} alt={item.name} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-3xl">📦</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-slate-600">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                        </svg>
                       )}
                     </div>
 

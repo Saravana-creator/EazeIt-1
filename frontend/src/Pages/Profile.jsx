@@ -214,17 +214,21 @@ const Profile = () => {
 
             <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg shadow-slate-950/20 flex flex-col gap-2">
               <button onClick={() => setActiveTab('profile-tab')} className={tabBtnClass('profile-tab')}>
-                ✏️ Edit Account Credentials
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                Edit Account Credentials
               </button>
               <button onClick={() => setActiveTab('orders-tab')} className={tabBtnClass('orders-tab')}>
-                🚚 Order History
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1m8-1a1 1 0 0 1-1 1H9m4-1V8a1 1 0 0 1 1-1h2.586a1 1 0 0 1 .707.293l3.414 3.414a1 1 0 0 1 .293.707V16a1 1 0 0 1-1 1h-1m-6-1a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm6 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" /></svg>
+                Order History
               </button>
               <button onClick={() => setActiveTab('addresses-tab')} className={tabBtnClass('addresses-tab')}>
-                📍 Saved Addresses
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                Saved Addresses
               </button>
               {user.role === 'admin' && (
                 <Link to="/admin" className="w-full text-left px-4 py-3 rounded-xl font-semibold text-sm text-slate-300 hover:bg-teal-400/10 hover:text-teal-400 transition-all duration-200 flex items-center gap-3">
-                  📊 Admin Panel
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg>
+                  Admin Panel
                 </Link>
               )}
             </div>
@@ -308,7 +312,9 @@ const Profile = () => {
 
                 {orders.length === 0 ? (
                   <div className="text-center py-10">
-                    <div className="text-5xl mb-3">📦</div>
+                    <div className="flex justify-center mb-3">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-14 h-14 text-slate-600"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
+                    </div>
                     <h4 className="text-lg font-bold text-white mb-2">No orders yet</h4>
                     <p className="text-slate-400 text-sm mb-5">Start shopping to see your order history here.</p>
                     <Link to="/products" className="inline-block bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-3 rounded-lg transition-all duration-200 active:scale-95">
@@ -345,7 +351,9 @@ const Profile = () => {
 
                 {addresses.length === 0 ? (
                   <div className="text-center py-10">
-                    <div className="text-5xl mb-3">📍</div>
+                    <div className="flex justify-center mb-3">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-14 h-14 text-slate-600"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                    </div>
                     <h4 className="text-lg font-bold text-white mb-2">No addresses saved</h4>
                     <p className="text-slate-400 text-sm mb-5">Add an address during checkout to save it for future orders.</p>
                   </div>

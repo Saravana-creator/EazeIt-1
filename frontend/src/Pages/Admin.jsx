@@ -16,11 +16,6 @@ import {
 } from '../Utils/api';
 
 // ── Constants ──────────────────────────────────────────────────────────────
-const CAT_EMOJI = {
-  'Oral Care': '🦷', 'Household': '🧹', 'Bath & Body': '🧼',
-  'Food & Snacks': '🍎', 'Personal Care': '💊', 'Beverages': '☕',
-  'Dairy': '🥛', 'Others': '📦',
-};
 const CATEGORIES = ['Oral Care', 'Household', 'Bath & Body', 'Food & Snacks', 'Personal Care', 'Beverages', 'Dairy', 'Others'];
 const EMPTY_FORM = { name: '', category: '', brand: '', price: '', mrp: '', unit: '', badge: '', image: '' };
 const ORDER_STATUSES = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
@@ -286,11 +281,11 @@ const Admin = () => {
   const recentProducts = [...products].reverse().slice(0, 5);
 
   const NAV_ITEMS = [
-    { key: 'dashboard',       icon: '📊', label: 'Dashboard' },
-    { key: 'add-product',     icon: '➕', label: 'Add Product' },
-    { key: 'manage-products', icon: '📦', label: 'Manage Products' },
-    { key: 'orders',          icon: '🛒', label: 'All Orders' },
-    { key: 'users',           icon: '👥', label: 'Users' },
+    { key: 'dashboard',       label: 'Dashboard',        icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg> },
+    { key: 'add-product',     label: 'Add Product',      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" /></svg> },
+    { key: 'manage-products', label: 'Manage Products',  icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg> },
+    { key: 'orders',          label: 'All Orders',       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" /></svg> },
+    { key: 'users',           label: 'Users',            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg> },
   ];
 
   const SECTION_TITLES = {
@@ -358,10 +353,12 @@ const Admin = () => {
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-8 mb-4">Links</div>
           <nav className="flex flex-col gap-1">
             <Link to="/" className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:bg-slate-700/60 hover:text-white rounded-lg font-medium text-sm transition-colors">
-              <span>🏠</span> View Store
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M3 9.75L12 3l9 6.75V21H3V9.75z" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9" /></svg>
+              View Store
             </Link>
             <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-rose-400 hover:bg-rose-500/10 rounded-lg font-medium text-sm transition-colors w-full text-left">
-              <span>🚪</span> Logout
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1" /></svg>
+              Logout
             </button>
           </nav>
         </div>
@@ -578,7 +575,7 @@ const Admin = () => {
                           <div className="w-14 h-14 rounded-lg bg-slate-700 border border-slate-600 flex items-center justify-center overflow-hidden shrink-0 text-2xl">
                             {p.image
                               ? <img src={resolveProductImage(p.image)} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; }} />
-                              : <span>{CAT_EMOJI[p.category] || '📦'}</span>}
+                              : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7 text-slate-600"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-white text-sm">{p.name}</div>
@@ -624,7 +621,7 @@ const Admin = () => {
                     {ORDER_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                   <button onClick={loadOrders} className="px-4 py-2 bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm rounded-lg transition-all">
-                    🔍 Search
+                    Search
                   </button>
                 </div>
 
@@ -704,7 +701,7 @@ const Admin = () => {
                     className="flex-1 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-teal-400"
                   />
                   <button onClick={loadUsers} className="px-4 py-2 bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm rounded-lg transition-all">
-                    🔍 Search
+                    Search
                   </button>
                 </div>
 

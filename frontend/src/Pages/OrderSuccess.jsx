@@ -54,7 +54,13 @@ const OrderSuccess = () => {
   return (
     <section className="py-16 px-4 md:px-6 bg-slate-900 min-h-[70vh]">
       <div className="max-w-3xl mx-auto bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center">
-        <div className="text-5xl mb-3">✅</div>
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-teal-400/15 border border-teal-400/30 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8 text-teal-400">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+            </svg>
+          </div>
+        </div>
         <h1 className="font-serif font-extrabold text-3xl text-white mb-2">Order Placed Successfully</h1>
         <p className="text-slate-400 text-sm mb-6">Thank you for shopping with EAZEIT.</p>
 

@@ -30,16 +30,16 @@ const initialAddress = {
 };
 
 const STEPS = [
-  { id: 1, label: 'Address',  icon: '📍' },
-  { id: 2, label: 'Review',   icon: '📋' },
-  { id: 3, label: 'Payment',  icon: '💳' },
-  { id: 4, label: 'Confirm',  icon: '✅' },
+  { id: 1, label: 'Address' },
+  { id: 2, label: 'Review' },
+  { id: 3, label: 'Payment' },
+  { id: 4, label: 'Confirm' },
 ];
 
 const PAYMENT_METHODS = [
-  { id: 'UPI',  label: 'UPI',                icon: '📲', desc: 'Pay via any UPI app' },
-  { id: 'CARD', label: 'Credit / Debit Card', icon: '💳', desc: 'Visa, Mastercard, RuPay' },
-  { id: 'COD',  label: 'Cash on Delivery',    icon: '💵', desc: 'Pay when you receive' },
+  { id: 'UPI',  label: 'UPI',                desc: 'Pay via any UPI app' },
+  { id: 'CARD', label: 'Credit / Debit Card', desc: 'Visa, Mastercard, RuPay' },
+  { id: 'COD',  label: 'Cash on Delivery',    desc: 'Pay when you receive' },
 ];
 
 const Checkout = () => {
@@ -228,21 +228,21 @@ const Checkout = () => {
       handler: async (response) => {
         // Payment successful — verify signature before finalising
         try {
-          showToast('🔍 Verifying payment...');
+          showToast('Verifying payment...');
           const verification = await verifyRazorpayPayment({
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
           });
           if (verification && verification.verified) {
-            showToast('✅ Payment verified! Placing your order…');
+            showToast('Payment verified! Placing your order…');
             await finaliseOrder(buildOrderData(), response.razorpay_payment_id);
           } else {
-            showToast('❌ Payment verification failed.', true);
+            showToast('Payment verification failed.', true);
             setPlacing(false);
           }
         } catch (err) {
-          showToast('❌ Verification error: ' + err.message, true);
+          showToast('Verification error: ' + err.message, true);
           setPlacing(false);
         }
       },
@@ -325,7 +325,8 @@ const Checkout = () => {
             {step === 1 && (
               <div>
                 <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
-                  <span>📍</span> Select Delivery Address
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5 text-teal-400 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                  Select Delivery Address
                 </h3>
 
                 {/* Saved addresses */}
@@ -357,7 +358,7 @@ const Checkout = () => {
                         <div className="text-xs text-slate-400">
                           {addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}, {addr.city} — {addr.pincode}
                         </div>
-                        <div className="text-xs text-slate-500 mt-0.5">📞 {addr.phone}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">Ph: {addr.phone}</div>
                       </div>
                     </label>
                   ))}
@@ -411,7 +412,7 @@ const Checkout = () => {
                       <div className="w-14 h-14 rounded-lg bg-slate-700 border border-slate-600 flex items-center justify-center overflow-hidden shrink-0">
                         {item.image
                           ? <img src={resolveProductImage(item.image)} alt={item.name} className="w-full h-full object-cover" />
-                          : <span className="text-2xl">📦</span>}
+                          : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-slate-500"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-semibold text-white leading-snug line-clamp-1">{item.name}</div>
@@ -443,7 +444,8 @@ const Checkout = () => {
             {step === 3 && (
               <div>
                 <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
-                  <span>💳</span> Select Payment Method
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5 text-teal-400 shrink-0"><rect x="2" y="5" width="20" height="14" rx="2" /><path strokeLinecap="round" strokeLinejoin="round" d="M2 10h20" /></svg>
+                  Select Payment Method
                 </h3>
                 <div className="space-y-3 mb-5">
                   {PAYMENT_METHODS.map((method) => (
@@ -461,7 +463,11 @@ const Checkout = () => {
                         onChange={() => setPaymentMethod(method.id)}
                         className="accent-teal-400"
                       />
-                      <span className="text-2xl">{method.icon}</span>
+                      <div className="w-8 h-8 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center text-teal-400 shrink-0">
+                        {method.id === 'UPI' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4m0 0V8m0 4h4m-4 0H8" /></svg>}
+                        {method.id === 'CARD' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><rect x="2" y="5" width="20" height="14" rx="2" /><path strokeLinecap="round" strokeLinejoin="round" d="M2 10h20" /></svg>}
+                        {method.id === 'COD' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm7-5a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" /></svg>}
+                      </div>
                       <div>
                         <div className="text-sm font-semibold text-white">{method.label}</div>
                         <div className="text-xs text-slate-400">{method.desc}</div>
@@ -535,7 +541,9 @@ const Checkout = () => {
                 {/* COD */}
                 {paymentMethod === 'COD' && (
                   <div className="border border-slate-700 rounded-xl p-4 bg-slate-900/50 flex items-center gap-3">
-                    <span className="text-3xl">💵</span>
+                    <div className="w-10 h-10 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center text-teal-400 shrink-0">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm7-5a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" /></svg>
+                    </div>
                     <div>
                       <div className="text-sm font-semibold text-white">Cash on Delivery selected</div>
                       <div className="text-xs text-slate-400">Keep exact change ready. Delivery agent will collect on arrival.</div>
@@ -549,20 +557,21 @@ const Checkout = () => {
             {step === 4 && (
               <div>
                 <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
-                  <span>✅</span> Confirm & Place Order
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5 text-teal-400 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+                  Confirm & Place Order
                 </h3>
 
                 {/* Summary cards */}
                 <div className="space-y-3 mb-6">
                   <div className="border border-slate-700 rounded-xl p-4">
-                    <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">📍 Delivery Address</div>
+                    <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">Delivery Address</div>
                     {selectedAddress ? (
                       <>
                         <div className="text-sm font-semibold text-white">{selectedAddress.name} ({selectedAddress.label})</div>
                         <div className="text-xs text-slate-400 mt-0.5">
                           {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ''}, {selectedAddress.city} — {selectedAddress.pincode}
                         </div>
-                        <div className="text-xs text-slate-500 mt-0.5">📞 {selectedAddress.phone}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">Ph: {selectedAddress.phone}</div>
                       </>
                     ) : (
                       <p className="text-xs text-rose-400">No address selected</p>
@@ -570,14 +579,14 @@ const Checkout = () => {
                   </div>
 
                   <div className="border border-slate-700 rounded-xl p-4">
-                    <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">💳 Payment</div>
+                    <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">Payment Method</div>
                     <div className="text-sm text-white font-semibold">
                       {paymentMethod === 'UPI' ? `UPI — ${upiId}` : paymentMethod === 'CARD' ? `Card ending in ${card.number.slice(-4)}` : 'Cash on Delivery'}
                     </div>
                   </div>
 
                   <div className="border border-slate-700 rounded-xl p-4">
-                    <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">🛒 Items ({cartItems.length})</div>
+                    <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">Items ({cartItems.length})</div>
                     {cartItems.slice(0, 3).map((item) => (
                       <div key={item.productId} className="flex justify-between text-xs text-slate-400 py-0.5">
                         <span>{item.name} × {item.qty}</span>
@@ -658,7 +667,7 @@ const Checkout = () => {
               <div className="flex justify-between text-slate-400">
                 <span>Delivery</span>
                 <span className={deliveryFee === 0 ? 'text-teal-400 font-semibold' : ''}>
-                  {deliveryFee === 0 ? '🎉 Free' : `Rs. ${deliveryFee}`}
+                  {deliveryFee === 0 ? 'Free' : `Rs. ${deliveryFee}`}
                 </span>
               </div>
               {deliveryFee > 0 && (
