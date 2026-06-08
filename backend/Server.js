@@ -161,8 +161,8 @@ mongoose
     console.log(`✅ MongoDB connected → db: "${dbName}"`);
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(`🔓 Allowed origins: ${ALLOWED_ORIGINS.join(", ")}`);
+      console.log(`🔓 Explicit allowed origins: [${Array.from(EXPLICIT_ORIGINS).join(", ") || "none"}]`);
+      console.log(`🔓 Dynamic allowance: localhost (any port) and all *.vercel.app subdomains`);
     });
   })
   .catch((err) => {

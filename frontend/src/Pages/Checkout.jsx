@@ -56,6 +56,7 @@ const Checkout = () => {
   const [card, setCard]                       = useState({ name: '', number: '', expiry: '', cvv: '' });
   const [placing, setPlacing]                 = useState(false);
   const [addingAddress, setAddingAddress]     = useState(false);
+  const [isOrderCompleted, setIsOrderCompleted] = useState(false);
 
   useEffect(() => {
     if (!user) { navigate('/login?redirect=/checkout'); return; }
@@ -76,8 +77,8 @@ const Checkout = () => {
   }, [user, navigate]);
 
   useEffect(() => {
-    if (cartItems.length === 0) navigate('/cart');
-  }, [cartItems, navigate]);
+    if (!isOrderCompleted && cartItems.length === 0) navigate('/cart');
+  }, [cartItems, navigate, isOrderCompleted]);
 
   const selectedAddress = useMemo(
     () => addresses.find((a) => a.id === selectedAddressId) || null,
@@ -128,6 +129,7 @@ const Checkout = () => {
     try {
       const saved = await apiPlaceOrder({ ...orderData, razorpayPaymentId: paymentId });
       const orderId = saved.orderId || saved.id;
+      setIsOrderCompleted(true);
       clearCart();
       navigate(`/order-success/${orderId}`);
     } catch (err) {

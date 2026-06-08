@@ -103,6 +103,18 @@ REACT_APP_EMAILJS_USER_ID=<your-emailjs-user-id>
 
 5. Open the app in your browser at `http://localhost:3000`.
 
+## 🚀 Deployed Links
+
+- **Frontend (Vercel)**: [https://eaze-it-1.vercel.app/](https://eaze-it-1.vercel.app/)
+- **Backend API (Render)**: [https://eazeit-backend-59lg.onrender.com/api](https://eazeit-backend-59lg.onrender.com/api)
+
+## 🌐 Deployment details
+
+The application is ready for production deployment:
+- **SPA Routing**: The frontend is configured with a `vercel.json` file to route all page requests back to `index.html` (supporting React Router paths like `/cart` or `/profile`).
+- **Dynamic CORS**: The backend automatically allows connections from `localhost` and any Vercel subdomain (`*.vercel.app`), ensuring CORS does not block newly generated deployment URLs.
+- **Database Caching & Storage**: Offline local storage caches for users, addresses, orders, and products have been completely replaced with real-time MongoDB interactions. The local storage is only utilized for persisting the shopping cart.
+
 ## 🌐 API Endpoints
 
 ### Authentication

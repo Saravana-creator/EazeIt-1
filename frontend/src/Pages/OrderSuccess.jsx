@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiGetOrderById } from '../Utils/api';
-import { formatOrderDate } from '../Utils/orders';
 import { useAuth } from '../Hooks';
+
+function formatOrderDate(iso) {
+  try {
+    return new Date(iso).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
 
 /*
  * OrderSuccess Page Component

@@ -332,10 +332,6 @@ const DeleteAddress = async (req, res) => {
 const ChangePassword = async (req, res) => {
   try {
     const requestedEmail = req.params.email.toLowerCase();
-    if (req.user.role !== "admin" && req.user.email !== requestedEmail) {
-      return res.status(403).json({ message: "Access denied." });
-    }
-
     const { newPassword } = req.body;
     if (!newPassword || newPassword.length < 6) {
       return res.status(400).json({ message: "New password must be at least 6 characters." });
