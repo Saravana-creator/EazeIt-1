@@ -5,10 +5,56 @@ import ProductCard from '../Components/ProductCard';
 
 const CATEGORIES = ['All Products', 'Oral Care', 'Household', 'Bath & Body', 'Food & Snacks', 'Personal Care', 'Beverages', 'Dairy', 'Others'];
 
-const CAT_EMOJI = {
-  'All Products': '🛍️', 'Oral Care': '🦷', 'Household': '🧹', 'Bath & Body': '🧼',
-  'Food & Snacks': '🍎', 'Personal Care': '💊', 'Beverages': '☕',
-  'Dairy': '🥛', 'Others': '📦',
+const CAT_ICON = {
+  'All Products': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" />
+    </svg>
+  ),
+  'Oral Care': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 3C7.343 3 6 4.343 6 6v6c0 3.314 2.686 6 6 6s6-2.686 6-6V6c0-1.657-1.343-3-3-3H9z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3m0 0v3" />
+    </svg>
+  ),
+  'Household': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.75L12 3l9 6.75V21H3V9.75z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9" />
+    </svg>
+  ),
+  'Bath & Body': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a5 5 0 0 1 10 0M5 20h14M12 4v4m-3-2 1.5 2M15 2l-1.5 4" />
+    </svg>
+  ),
+  'Food & Snacks': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2C8 2 5 6 5 10c0 3 1.5 5.5 4 6.8V21h6v-4.2C17.5 15.5 19 13 19 10c0-4-3-8-7-8z" />
+    </svg>
+  ),
+  'Personal Care': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zM4 22c0-4.418 3.582-8 8-8s8 3.582 8 8" />
+    </svg>
+  ),
+  'Beverages': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 3h8l1 9H7L8 3zM7 12c0 5 2 7 5 7s5-2 5-7" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 7h2a2 2 0 0 1 0 4h-2" />
+    </svg>
+  ),
+  'Dairy': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 3h6l2 5v11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 8h6" />
+    </svg>
+  ),
+  'Others': (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+    </svg>
+  ),
 };
 
 const Products = () => {
@@ -166,7 +212,7 @@ const Products = () => {
                     className={`flex justify-between items-center text-sm px-3 py-2 rounded-lg transition-colors text-left ${selectedCategory === cat ? 'bg-teal-400/10 text-teal-400' : 'text-slate-300 hover:bg-teal-400/5 hover:text-teal-400'}`}
                   >
                     <span className="flex items-center gap-2">
-                      <span>{CAT_EMOJI[cat] || '📦'}</span>
+                      {CAT_ICON[cat] || CAT_ICON['Others']}
                       <span>{cat}</span>
                     </span>
                     <span className={`text-xs ${selectedCategory === cat ? 'text-teal-400' : 'text-slate-400'}`}>

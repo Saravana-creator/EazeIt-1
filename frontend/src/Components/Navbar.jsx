@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import { useAuth } from '../Hooks';
@@ -9,19 +9,6 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsProfileOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const getLinkClass = (path) => {
     const isActive = location.pathname === path;
@@ -86,13 +73,16 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Right Actions */}
-            <div className="d-none d-md-flex align-items-center gap-4 shrink-0">
-                {/* Cart Link – shows real count from useCart */}
+            <div className="d-none d-md-flex align-items-center gap-3 shrink-0">
+                {/* Cart Link */}
                 <Link
                   to="/cart"
-                  className="relative text-slate-300 hover:text-teal-400 border border-slate-700 hover:border-teal-400 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 text-decoration-none d-flex align-items-center gap-1.5"
+                  className="relative d-flex align-items-center gap-2 text-slate-300 hover:text-teal-400 border border-slate-700 hover:border-teal-400 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 text-decoration-none"
                 >
-                  🛒 Cart
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{width:'16px',height:'16px'}}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" />
+                  </svg>
+                  Cart
                   {cartCount > 0 && (
                     <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-teal-400 text-slate-900 text-[10px] font-extrabold">
                       {cartCount}
@@ -102,87 +92,44 @@ const Navbar = () => {
 
                 {/* Auth section */}
                 {user ? (
-                  <div className="position-relative" ref={dropdownRef}>
-                    <button
-                      onClick={() => setIsProfileOpen(!isProfileOpen)}
-                      className="d-flex align-items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-teal-400 text-slate-300 hover:text-teal-400 transition-colors duration-200"
+                  <div className="d-flex align-items-center gap-2">
+                    {/* Admin badge */}
+                    {user.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        className="d-flex align-items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:text-purple-300 text-xs font-bold uppercase tracking-wider text-decoration-none transition-colors"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{width:'13px',height:'13px'}}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                        Admin
+                      </Link>
+                    )}
+
+                    {/* Profile avatar — navigates directly to /profile */}
+                    <Link
+                      to="/profile"
+                      title={`${user.firstName} ${user.lastName} — View Profile`}
+                      className="d-flex align-items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-teal-400 text-slate-300 hover:text-teal-400 transition-colors duration-200 text-decoration-none"
                     >
                       <div className="w-6 h-6 rounded-full bg-teal-400 text-slate-950 d-flex align-items-center justify-center text-xs font-bold uppercase shrink-0">
                         {user.firstName?.[0] || 'U'}{user.lastName?.[0] || ''}
                       </div>
                       <span className="text-sm font-semibold whitespace-nowrap">
-                        Hello, {user.firstName}
+                        {user.firstName}
                       </span>
-                      <span className="text-[10px] transition-transform duration-200 select-none">
-                        {isProfileOpen ? '▲' : '▼'}
-                      </span>
+                    </Link>
+
+                    {/* Logout icon button */}
+                    <button
+                      onClick={handleLogout}
+                      title="Logout"
+                      className="d-flex align-items-center justify-center w-8 h-8 rounded-lg border border-slate-700 hover:border-rose-500/50 bg-slate-800 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 transition-colors duration-200"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{width:'15px',height:'15px'}}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1" />
+                      </svg>
                     </button>
-
-                    {/* Dropdown Menu */}
-                    {isProfileOpen && (
-                      <div 
-                        className="position-absolute end-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-xl py-2 z-50 animate-fade-in d-flex flex-column gap-1"
-                        style={{ top: '100%' }}
-                      >
-                        {/* User Header Info */}
-                        <div className="px-3 py-2 border-bottom border-slate-700/60">
-                          <p className="text-[10px] text-slate-400 m-0 uppercase tracking-wider">Signed in as</p>
-                          <p className="text-sm font-bold text-white truncate m-0 mt-1">
-                            {user.firstName} {user.lastName}
-                          </p>
-                          <p className="text-xs text-teal-400 truncate m-0 mt-0.5">
-                            {user.email}
-                          </p>
-                        </div>
-
-                        {/* Menu Links */}
-                        <div className="px-2 py-1 d-flex flex-column gap-1">
-                          {user.role === 'admin' && (
-                            <Link
-                              to="/admin"
-                              onClick={() => setIsProfileOpen(false)}
-                              className="d-flex align-items-center gap-2 px-3 py-2 rounded-lg text-purple-400 hover:bg-purple-500/10 text-xs font-extrabold tracking-wider uppercase text-decoration-none transition-colors"
-                            >
-                              👑 Admin Dashboard
-                            </Link>
-                          )}
-                          <Link
-                            to="/profile"
-                            onClick={() => setIsProfileOpen(false)}
-                            className="d-flex align-items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-teal-400 text-sm font-medium text-decoration-none transition-colors"
-                          >
-                            👤 My Profile
-                          </Link>
-                          <Link
-                            to="/profile?tab=orders-tab"
-                            onClick={() => setIsProfileOpen(false)}
-                            className="d-flex align-items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-teal-400 text-sm font-medium text-decoration-none transition-colors"
-                          >
-                            🚚 My Orders
-                          </Link>
-                          <Link
-                            to="/profile?tab=addresses-tab"
-                            onClick={() => setIsProfileOpen(false)}
-                            className="d-flex align-items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-teal-400 text-sm font-medium text-decoration-none transition-colors"
-                          >
-                            📍 Saved Addresses
-                          </Link>
-                        </div>
-
-                        {/* Logout Button */}
-                        <div className="border-top border-slate-700/60 px-2 pt-1.5">
-                          <button
-                            onClick={() => {
-                              setIsProfileOpen(false);
-                              handleLogout();
-                            }}
-                            className="w-full d-flex align-items-center gap-2 px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/15 hover:text-rose-300 text-sm font-bold text-left border-0 bg-transparent transition-colors"
-                          >
-                            🚪 Logout
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <Link to="/login" className="btn bg-teal-400 hover:bg-teal-500 text-slate-900 fw-semibold text-sm px-5 py-1.5 rounded-lg transition-all duration-200 active:scale-95 border-0 text-decoration-none font-bold">Login</Link>
@@ -206,7 +153,10 @@ const Navbar = () => {
             <Link to="/contact" className={getMobileLinkClass('/contact')}>Contact</Link>
             {/* Cart with badge in mobile menu */}
             <Link to="/cart" className="text-slate-300 hover:text-teal-400 font-medium py-2 border-bottom border-slate-700 text-sm d-flex align-items-center gap-2 transition-colors duration-200 text-decoration-none">
-              🛒 Cart
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{width:'15px',height:'15px'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" />
+              </svg>
+              Cart
               {cartCount > 0 && (
                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-teal-400 text-slate-900 text-[10px] font-extrabold">{cartCount}</span>
               )}
@@ -214,7 +164,7 @@ const Navbar = () => {
             {user ? (
               <>
                 {user.role === 'admin' && (
-                  <Link to="/admin" className="text-purple-400 hover:text-purple-300 font-semibold py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">👑 Admin Panel</Link>
+                  <Link to="/admin" className="text-purple-400 hover:text-purple-300 font-semibold py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">Admin Panel</Link>
                 )}
                 <Link to="/profile?tab=orders-tab" className="text-slate-300 hover:text-teal-400 font-medium py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">My Orders</Link>
                 <Link to="/profile" className="text-slate-300 hover:text-teal-400 font-medium py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">My Profile</Link>
