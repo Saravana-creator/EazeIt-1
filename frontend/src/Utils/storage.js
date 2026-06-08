@@ -27,8 +27,8 @@ export const SESSION_KEYS = {
 
 
 
-export const FREE_DELIVERY_MIN = 299;
-export const DELIVERY_FEE = 40;
+export const FREE_DELIVERY_MIN = 500;
+export const DELIVERY_FEE = 10;
 
 export function calcDeliveryFee(subtotal) {
   return subtotal >= FREE_DELIVERY_MIN ? 0 : DELIVERY_FEE;

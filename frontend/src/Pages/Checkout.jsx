@@ -8,9 +8,9 @@ import {
   getDefaultAddress,
   seedDefaultAddresses,
 } from '../Utils/addresses';
-import { generateOrderId, saveOrder } from '../Utils/orders';
 import { showToast } from '../Components/Toast';
-import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment } from '../Utils/api';import { resolveProductImage } from '../Utils/image';
+import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment } from '../Utils/api';
+import { resolveProductImage } from '../Utils/image';
 /** Dynamically loads the Razorpay checkout script */
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -122,18 +122,18 @@ const Checkout = () => {
   const finaliseOrder = async (orderData, paymentId = null) => {
     try {
       const saved = await apiPlaceOrder({ ...orderData, razorpayPaymentId: paymentId });
-      const localOrder = { ...saved, id: saved.orderId || saved.id };
-      saveOrder(user.email, localOrder);
-      clearCart();
-      navigate(`/order-success/${localOrder.id}`);
-    } catch (err) {
-      const isNet = err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch');
-      if (!isNet) { showToast(err.message, true); setPlacing(false); return; }
-      // Offline fallback
-      const orderId = generateOrderId();
-      saveOrder(user.email, { id: orderId, items: cartItems, subtotal: cartSubtotal, deliveryFee, total: cartTotal, paymentMethod, address: selectedAddress, status: 'Confirmed', placedAt: new Date().toISOString() });
+      const orderId = saved.orderId || saved.id;
       clearCart();
       navigate(`/order-success/${orderId}`);
+    } catch (err) {
+      const isNet = err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch');
+      if (!isNet) {
+        showToast(err.message, true);
+        setPlacing(false);
+        return;
+      }
+      showToast('Unable to place the order. Please try again when the network is available.', true);
+      setPlacing(false);
     }
   };
 
@@ -191,9 +191,8 @@ const Checkout = () => {
     try {
       rzpOrder = await createRazorpayOrder(cartTotal);
     } catch (err) {
-      // If backend is offline, fall back to local placement without Razorpay popup
-      console.warn('Razorpay backend offline, falling back to local order.');
-      await finaliseOrder(buildOrderData());
+      showToast('Payment service unavailable. Please try again later.', true);
+      setPlacing(false);
       return;
     }
 
@@ -655,7 +654,7 @@ const Checkout = () => {
                 </span>
               </div>
               {deliveryFee > 0 && (
-                <div className="text-[10px] text-slate-500">Add Rs. {299 - cartSubtotal} more for free delivery</div>
+                <div className="text-[10px] text-slate-500">Add Rs. {Math.max(0, 500 - cartSubtotal)} more for free delivery</div>
               )}
               <div className="flex justify-between text-white font-bold border-t border-slate-700 pt-2 text-base">
                 <span>Total</span>

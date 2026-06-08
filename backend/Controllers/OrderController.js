@@ -1,5 +1,18 @@
 const Order = require("../Models/OrderModel");
 
+const DELIVERY_FREE_THRESHOLD = 500;
+const DELIVERY_FEE_AMOUNT = 10;
+
+function calculateDeliveryFee(subtotal) {
+  const amount = Number(subtotal) || 0;
+  return amount >= DELIVERY_FREE_THRESHOLD ? 0 : DELIVERY_FEE_AMOUNT;
+}
+
+function ensureNumber(value, fallback = 0) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}
+
 // ── Helper: generate a unique, collision-safe order ID ───────────────────────
 async function generateOrderId() {
   // Use timestamp + random suffix to avoid race conditions
@@ -21,14 +34,33 @@ async function generateOrderId() {
 // ─────────────────────────────────────────────────────────────────────────────
 const PlaceOrder = async (req, res) => {
   try {
-    const { userEmail, items, address, paymentMethod, subtotal, deliveryFee, total, razorpayPaymentId } = req.body;
+    const {
+      userEmail,
+      items,
+      address,
+      paymentMethod,
+      subtotal,
+      deliveryFee,
+      total,
+      razorpayPaymentId,
+    } = req.body;
 
-    if (!userEmail || !items?.length || !address || total == null) {
+    const normalizedEmail = String(userEmail || req.user?.email || '').toLowerCase().trim();
+    const itemCount = Array.isArray(items) ? items.length : 0;
+    const subtotalAmount = ensureNumber(subtotal, 0);
+    const computedDeliveryFee = calculateDeliveryFee(subtotalAmount);
+    const expectedTotal = subtotalAmount + computedDeliveryFee;
+
+    if (!normalizedEmail || itemCount === 0 || !address || !address.name || !address.line1 || !address.city || !address.pincode || !address.phone) {
       return res.status(400).json({ message: "Missing required order fields." });
     }
 
+    if (total != null && Number(total) !== expectedTotal) {
+      return res.status(400).json({ message: "Order total does not match expected amount." });
+    }
+
     // Users can only place orders for themselves (unless admin)
-    if (req.user.role !== "admin" && req.user.email !== userEmail.toLowerCase()) {
+    if (req.user.role !== "admin" && req.user.email !== normalizedEmail) {
       return res.status(403).json({ message: "Access denied." });
     }
 
@@ -36,13 +68,13 @@ const PlaceOrder = async (req, res) => {
 
     const order = new Order({
       orderId,
-      userEmail:          userEmail.toLowerCase(),
+      userEmail:          normalizedEmail,
       items,
       address,
       paymentMethod:      paymentMethod || "COD",
-      subtotal:           subtotal || 0,
-      deliveryFee:        deliveryFee || 0,
-      total,
+      subtotal:           subtotalAmount,
+      deliveryFee:        computedDeliveryFee,
+      total:              expectedTotal,
       status:             "Confirmed",
       razorpayPaymentId:  razorpayPaymentId || null,
       placedAt:           new Date(),

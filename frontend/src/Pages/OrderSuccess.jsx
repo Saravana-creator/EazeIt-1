@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getOrderById, formatOrderDate } from '../Utils/orders';
+import { apiGetOrderById } from '../Utils/api';
+import { formatOrderDate } from '../Utils/orders';
 import { useAuth } from '../Hooks';
 
 /*
@@ -25,10 +26,18 @@ const OrderSuccess = () => {
 
   // Fetch order on component mount
   useEffect(() => {
-    if (user?.email && orderId) {
-      const foundOrder = getOrderById(user.email, orderId);
-      setOrder(foundOrder);
-    }
+    if (!user?.email || !orderId) return;
+
+    const fetchOrder = async () => {
+      try {
+        const result = await apiGetOrderById(orderId);
+        setOrder(result);
+      } catch (error) {
+        console.error('Order fetch failed:', error);
+      }
+    };
+
+    fetchOrder();
   }, [user, orderId]);
 
   return (
@@ -42,7 +51,7 @@ const OrderSuccess = () => {
           <div className="text-left bg-slate-900 border border-slate-700 rounded-xl p-4 mb-6 text-sm">
             <div className="flex justify-between mb-2">
               <span className="text-slate-400">Order ID</span>
-              <span className="text-white font-semibold">{order.id}</span>
+              <span className="text-white font-semibold">{order.orderId || order.id}</span>
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-slate-400">Date</span>

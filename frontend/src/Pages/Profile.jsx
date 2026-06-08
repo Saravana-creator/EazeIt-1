@@ -9,7 +9,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { getOrdersForUser, formatOrderDate } from '../Utils/orders';
+import { formatOrderDate } from '../Utils/orders';
 import { getAddressesForUser, deleteAddress } from '../Utils/addresses';
 import { useAuth } from '../Hooks';
 import { showToast } from '../Components/Toast';
@@ -58,8 +58,8 @@ const Profile = () => {
           const list = await apiGetUserOrders(user.email);
           setOrders(list);
         } catch (error) {
-          console.warn('Backend server offline. Loading local orders.');
-          setOrders(getOrdersForUser(user.email));
+          showToast('Unable to load order history. Please try again later.', true);
+          setOrders([]);
         }
       };
       loadOrders();
@@ -339,11 +339,11 @@ const Profile = () => {
                 ) : (
                   <div className="flex flex-col gap-5">
                     {orders.map((order) => (
-                      <div key={order.id} className="border border-slate-700/80 rounded-xl p-4 bg-slate-900/30 flex flex-col md:flex-row items-center justify-between gap-4">
+                      <div key={order.orderId} className="border border-slate-700/80 rounded-xl p-4 bg-slate-900/30 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-slate-800 border border-slate-700 rounded-lg flex items-center justify-center text-sm font-bold text-teal-400">EZ</div>
                           <div>
-                            <div className="text-sm font-semibold text-white">Order #{order.id}</div>
+                            <div className="text-sm font-semibold text-white">Order #{order.orderId}</div>
                             <div className="text-xs text-slate-400">{formatOrderDate(order.placedAt)} • {order.items.length} Items • Rs. {order.total}</div>
                             <div className="text-[10px] text-slate-500 mt-1">{order.items.map(i => i.name).join(', ').slice(0, 60)}...</div>
                           </div>
