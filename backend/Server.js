@@ -48,21 +48,23 @@ app.use(
 app.use(compression());
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || ALLOW_ALL_ORIGINS || ALLOWED_ORIGINS.includes(origin)) {
-      return callback(null, true);
-    }
-    console.warn(`CORS blocked: origin ${origin} not allowed`);
-    return callback(new Error(`CORS blocked: origin ${origin} not allowed`));
-  },
+  origin: true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 204,
 };
 
-// For preflight support, let the CORS middleware handle OPTIONS requests.
 app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // ── Rate Limiting ────────────────────────────────────────────────────────────
 // Rate limiting has been disabled during initial creation and testing.
