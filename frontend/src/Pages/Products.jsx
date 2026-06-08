@@ -20,7 +20,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Products');
   const [selectedBrand, setSelectedBrand] = useState('All Brands');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('default');
+  const [sortBy, setSortBy] = useState('newest');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [activePriceRange, setActivePriceRange] = useState({ min: '', max: '' });
@@ -256,10 +256,10 @@ const Products = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-slate-900 border border-slate-700 rounded-lg text-white text-sm px-3 py-2 outline-none focus:border-teal-400 w-full sm:w-auto"
               >
-                <option value="default">Sort by: Default</option>
+                <option value="newest">Sort by: Newest</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
-                <option value="newest">Newest First</option>
+                <option value="default">Sort by: Default</option>
               </select>
             </div>
 

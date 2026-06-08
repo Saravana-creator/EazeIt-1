@@ -2,7 +2,7 @@
  * src/Data/products.js
  * --------------------
  * Utility functions for product-related operations.
- * The actual product list lives in ProductContext (localStorage-backed).
+ * The actual product list lives in MongoDB (fetched via ProductContext → API).
  * This file only provides helper functions used by CartContext and elsewhere.
  */
 
@@ -41,7 +41,7 @@ export const CAT_EMOJI = {
  */
 export function cartItemFromProduct(product, qty = 1) {
   return {
-    productId: product.id,
+    productId: product.id || product._id || '',
     name:      product.name,
     category:  product.category,
     brand:     product.brand || 'Others',

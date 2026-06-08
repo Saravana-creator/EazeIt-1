@@ -155,41 +155,15 @@ const Signup = () => {
       setTimeout(() => navigate('/profile'), 1200);
       return;
     } catch (error) {
-      const isNetworkError = error.message.includes('fetch') || error.message.includes('NetworkError') || error.message.includes('Failed to fetch');
-      if (!isNetworkError) {
-        // Validation/duplicate error from server
-        showToast(error.message, true);
-        if (error.message.toLowerCase().includes('email')) {
-          setErrors((prev) => ({ ...prev, email: error.message }));
-        }
-        return;
+      const message = error.message || 'Registration failed. Please try again.';
+      showToast(message, true);
+      if (message.toLowerCase().includes('already exists')) {
+        setErrors((prev) => ({ ...prev, email: 'This email is already registered. Please login.' }));
+      } else if (message.toLowerCase().includes('email')) {
+        setErrors((prev) => ({ ...prev, email: message }));
       }
-      console.warn('Backend server offline. Falling back to local offline mode.');
-    }
-
-    // 2. Fallback: Local database signup (offline)
-    const usersDatabase = JSON.parse(localStorage.getItem('eazeit_users')) || [];
-    const alreadyExists = usersDatabase.some((u) => u.email.toLowerCase() === trimmedEmail);
-    if (alreadyExists) {
-      showToast('This email is already registered!', true);
-      setErrors((prev) => ({ ...prev, email: 'Email already registered!' }));
       return;
     }
-
-    const newUser = {
-      firstName:   formData.firstname.trim(),
-      lastName:    formData.lastname.trim(),
-      email:       trimmedEmail,
-      countryCode: '+91',
-      mobile:      formData.mobile.trim(),
-      password:    formData.password,
-    };
-
-    usersDatabase.push(newUser);
-    localStorage.setItem('eazeit_users', JSON.stringify(usersDatabase));
-    login(newUser); // ← useAuth hook — saves to sessionStorage & updates state
-    showToast('Registration successful! Welcome to EAZEIT 🎉 (Offline)');
-    setTimeout(() => navigate('/profile'), 1200);
   };
 
   const inputClass = (field) =>

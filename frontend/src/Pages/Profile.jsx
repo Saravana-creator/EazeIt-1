@@ -2,18 +2,21 @@
  * Profile Page Component
  * ----------------------
  * Displays user profile info, order history, and saved addresses.
- * Uses hooks:
- *   - useAuth: central auth context (user, login/logout functions)
- *   - useState: to manage activeTab, form data, errors
- *   - useEffect: to load orders/addresses when user loads
+ * All data (profile, orders, addresses) flows through the MongoDB backend API.
  */
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { formatOrderDate } from '../Utils/orders';
-import { getAddressesForUser, deleteAddress } from '../Utils/addresses';
 import { useAuth } from '../Hooks';
 import { showToast } from '../Components/Toast';
-import { apiUpdateProfile, apiGetUserOrders } from '../Utils/api';
+import { apiUpdateProfile, apiGetUserOrders, apiGetAddresses, apiDeleteAddress } from '../Utils/api';
+
+function formatOrderDate(iso) {
+  try {
+    return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  } catch {
+    return iso;
+  }
+}
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -49,20 +52,23 @@ const Profile = () => {
       password: ''
     });
 
-    // Load orders and addresses
+    // Load orders and addresses from MongoDB via API
     if (user.email) {
-      setAddresses(getAddressesForUser(user.email));
-
-      const loadOrders = async () => {
+      const loadData = async () => {
         try {
-          const list = await apiGetUserOrders(user.email);
-          setOrders(list);
+          const [orderList, addrList] = await Promise.all([
+            apiGetUserOrders(user.email),
+            apiGetAddresses(user.email),
+          ]);
+          setOrders(orderList);
+          setAddresses(addrList);
         } catch (error) {
-          showToast('Unable to load order history. Please try again later.', true);
+          showToast('Unable to load your data. Please try again later.', true);
           setOrders([]);
+          setAddresses([]);
         }
       };
-      loadOrders();
+      loadData();
     }
   }, [user, navigate]);
 
@@ -115,58 +121,31 @@ const Profile = () => {
       return;
     }
 
-    // Try updating profile on the backend first
+    // Update profile via MongoDB backend API
     try {
       const updatedUser = await apiUpdateProfile(user.email, {
         firstName: editForm.firstname.trim(),
-        lastName: editForm.lastname.trim(),
-        mobile: editForm.mobile.trim(),
+        lastName:  editForm.lastname.trim(),
+        mobile:    editForm.mobile.trim(),
       });
       login(updatedUser);
       setEditForm(prev => ({ ...prev, password: '' }));
       showToast('Profile updated successfully!');
-      return;
     } catch (error) {
-      const isNetworkError = error.message.includes('fetch') || error.message.includes('NetworkError') || error.message.includes('Failed to fetch');
-      if (!isNetworkError) {
-        showToast(error.message, true);
-        return;
-      }
-      console.warn('Backend server offline. Falling back to local offline mode.');
+      showToast(error.message || 'Failed to update profile. Please try again.', true);
     }
-
-    // Fallback: Verify password and update locally
-    if (user.role !== 'admin') {
-      const usersDatabase = JSON.parse(localStorage.getItem('eazeit_users')) || [];
-      const dbUser = usersDatabase.find(u => u.email.toLowerCase() === user.email.toLowerCase());
-      if (!dbUser || dbUser.password !== editForm.password) {
-        setEditErrors(prev => ({ ...prev, password: 'Password incorrect! Cannot update.' }));
-        showToast('Password verification failed.', true);
-        return;
-      }
-
-      const updatedDb = usersDatabase.map(u => {
-        if (u.email.toLowerCase() === user.email.toLowerCase()) {
-          return { ...u, firstName: editForm.firstname.trim(), lastName: editForm.lastname.trim(), mobile: editForm.mobile.trim() };
-        }
-        return u;
-      });
-      localStorage.setItem('eazeit_users', JSON.stringify(updatedDb));
-    }
-
-    const updatedUser = { ...user, firstName: editForm.firstname.trim(), lastName: editForm.lastname.trim(), mobile: editForm.mobile.trim() };
-    login(updatedUser);
-    setEditForm(prev => ({ ...prev, password: '' }));
-    showToast('Profile updated successfully! (Offline)');
   };
 
-  const handleDeleteAddress = (addressId) => {
+  const handleDeleteAddress = async (addressId) => {
     if (!window.confirm('Are you sure you want to delete this address?')) return;
     if (!user) return;
-    
-    deleteAddress(user.email, addressId);
-    setAddresses(getAddressesForUser(user.email));
-    showToast('Address deleted successfully.');
+    try {
+      const updated = await apiDeleteAddress(user.email, addressId);
+      setAddresses(updated);
+      showToast('Address deleted successfully.');
+    } catch (error) {
+      showToast(error.message || 'Failed to delete address.', true);
+    }
   };
 
   const getInitials = () => {

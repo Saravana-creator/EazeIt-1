@@ -26,6 +26,8 @@ const ALLOWED_ORIGINS = [
       .map((o) => o.trim())
       .filter((o) => o.length > 0)
       .concat([
+        "https://eaze-it-1.vercel.app",
+        "https://eaze-it-1-mv8t3m4or-saravana-perumal-ms-projects.vercel.app",
         "https://eaze-it-1-kzgs1st6v-saravana-perumal-ms-projects.vercel.app",
         "https://eaze-it-1-ap8cacpuz-saravana-perumal-ms-projects.vercel.app",
         "https://eaze-it-1-25uotlgey-saravana-perumal-ms-projects.vercel.app",
@@ -58,8 +60,9 @@ const corsOptions = {
     callback(new Error(`Origin ${origin} not allowed by CORS`));
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  preflightContinue: false,
   optionsSuccessStatus: 204,
 };
 
@@ -115,8 +118,8 @@ app.use((req, res) => {
 // ── Global Error Handler ─────────────────────────────────────────────────────
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error("❌ Unhandled error:", err.message);
-  if (err.message && err.message.startsWith("CORS blocked")) {
+  console.error("❌ Unhandled error:", err.message, "path:", req.path, "origin:", req.headers.origin);
+  if (err.message && (err.message.includes("not allowed by CORS") || err.message.includes("CORS blocked"))) {
     return res.status(403).json({ message: err.message });
   }
   res.status(500).json({

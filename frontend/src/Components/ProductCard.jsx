@@ -33,8 +33,11 @@ const ProductCard = ({ product, compact = false }) => {
   const { cartItems, addToCart, updateQty, removeFromCart } = useCart();
   const { user } = useAuth();
 
+  // Resolve the canonical product ID (ProductContext normalizes _id → id, but guard both)
+  const pid = product.id || product._id || '';
+
   // Find how many of this product are already in cart
-  const cartItem = cartItems.find((i) => i.productId === product.id);
+  const cartItem = cartItems.find((i) => i.productId === pid);
   const qtyInCart = cartItem ? cartItem.qty : 0;
 
   const [adding, setAdding] = useState(false);
@@ -63,20 +66,20 @@ const ProductCard = ({ product, compact = false }) => {
 
   const handleDecrease = useCallback(() => {
     if (qtyInCart === 1) {
-      removeFromCart(product.id);
+      removeFromCart(pid);
     } else {
-      updateQty(product.id, qtyInCart - 1);
+      updateQty(pid, qtyInCart - 1);
     }
-  }, [product.id, qtyInCart, removeFromCart, updateQty]);
+  }, [pid, qtyInCart, removeFromCart, updateQty]);
 
   const handleBuyNow = useCallback(() => {
-    addToCart(product, 1);
+    addToCart({ ...product, id: pid }, 1);
     if (!user) {
       navigate('/login?redirect=/cart');
     } else {
       navigate('/cart');
     }
-  }, [product, addToCart, user, navigate]);
+  }, [product, pid, addToCart, user, navigate]);
 
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-teal-400 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between h-full">

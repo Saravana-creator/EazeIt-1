@@ -58,7 +58,7 @@ const StatCard = ({ label, value, sub, color = 'text-white' }) => (
 // ── Admin Page ────────────────────────────────────────────────────────────
 const Admin = () => {
   const navigate = useNavigate();
-  const { products, addProduct, updateProduct, deleteProduct, resetToSeed } = useProducts();
+  const { products, addProduct, updateProduct, deleteProduct, refreshProducts } = useProducts();
   const { user, isAdmin, logout } = useAuth();
 
   // ── Section & Mobile state ───────────────────────────────────────────────
@@ -524,8 +524,8 @@ const Admin = () => {
                     <p className="text-xs text-slate-400 mt-0.5">{products.length} product{products.length !== 1 ? 's' : ''} in store</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => { if (window.confirm('Reset all products to defaults?')) resetToSeed(); }} className="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-2 rounded-lg transition-all">
-                      ↺ Reset
+                    <button onClick={() => { refreshProducts(); }} className="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-2 rounded-lg transition-all">
+                      ↺ Refresh
                     </button>
                     <button onClick={() => setActiveSection('add-product')} className="bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-xs px-4 py-2 rounded-lg transition-all">
                       + Add New

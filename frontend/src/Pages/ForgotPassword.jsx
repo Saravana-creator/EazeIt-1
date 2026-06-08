@@ -1,23 +1,18 @@
 /**
  * ForgotPassword Page
  * -------------------
- * Hooks used:
- *   useState              — step control, emails, passwords, errors, visibility toggles
- *   useNavigate           — redirect after successful reset
- *   usePasswordStrength   — custom hook: derives strength meter state from new password
+ * Step 1: Verify email exists via backend API (/users/check-email)
+ * Step 2: Reset password via backend API (/users/change-password)
  *
- * Props: None (page-level component)
- *
- * Props passed down:
- *   - <EyeButton visible={bool} onToggle={fn} />
- *   - <StrengthMeter strength={object} />
+ * No localStorage usage — entirely backed by MongoDB through the API.
  */
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePasswordStrength } from '../Hooks';
 import { showToast } from '../Components/Toast';
+import { apiCheckEmail, apiChangePassword } from '../Utils/api';
 
-/* ─── Eye toggle button — receives props: visible, onToggle, id ─────────── */
+/* ─── Eye toggle button ─────────────────────────────────────────────────── */
 const EyeButton = ({ visible, onToggle, id }) => (
   <button type="button" id={id} onClick={onToggle}
     className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-400 transition-colors"
@@ -35,7 +30,7 @@ const EyeButton = ({ visible, onToggle, id }) => (
   </button>
 );
 
-/* ─── Strength Meter — receives props: strength ─────────────────────────── */
+/* ─── Strength Meter ────────────────────────────────────────────────────── */
 const StrengthMeter = ({ strength }) => (
   <div className="mt-1 flex flex-col gap-1">
     <div className="flex h-1.5 w-full bg-slate-700 rounded-full overflow-hidden">
@@ -51,25 +46,23 @@ const StrengthMeter = ({ strength }) => (
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
-  // ── State hooks ──────────────────────────────────────────────────────────
-  const [step, setStep] = useState('step1'); // 'step1' | 'step2'
-  
+  const [step, setStep]               = useState('step1'); // 'step1' | 'step2'
   const [lookupEmail, setLookupEmail] = useState('');
   const [emailError, setEmailError]   = useState('');
+  const [checkingEmail, setCheckingEmail] = useState(false);
 
   const [newPassword, setNewPassword]               = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [showNewPassword, setShowNewPassword]       = useState(false);
   const [showConfirmNew, setShowConfirmNew]         = useState(false);
-  
-  const [newPasswordError, setNewPasswordError]               = useState('');
+  const [newPasswordError, setNewPasswordError]     = useState('');
   const [confirmNewPasswordError, setConfirmNewPasswordError] = useState('');
+  const [resetting, setResetting]                   = useState(false);
 
-  // ── Custom hooks ─────────────────────────────────────────────────────────
   const strength = usePasswordStrength(newPassword);
 
-  // ── Handlers ─────────────────────────────────────────────────────────────
-  const handleEmailLookup = (e) => {
+  // Step 1: Verify email exists in MongoDB
+  const handleEmailLookup = async (e) => {
     e.preventDefault();
     const email = lookupEmail.trim().toLowerCase();
 
@@ -78,18 +71,24 @@ const ForgotPassword = () => {
       return;
     }
 
-    const usersDatabase = JSON.parse(localStorage.getItem('eazeit_users')) || [];
-    const found = usersDatabase.some((u) => u.email.toLowerCase() === email);
-
-    if (!found) {
-      setEmailError('No account found with this email address.');
-    } else {
-      setEmailError('');
-      setStep('step2');
+    setCheckingEmail(true);
+    try {
+      const exists = await apiCheckEmail(email);
+      if (!exists) {
+        setEmailError('No account found with this email address.');
+      } else {
+        setEmailError('');
+        setStep('step2');
+      }
+    } catch (err) {
+      showToast('Unable to verify email. Please check your connection.', true);
+    } finally {
+      setCheckingEmail(false);
     }
   };
 
-  const handlePasswordReset = (e) => {
+  // Step 2: Reset password via MongoDB
+  const handlePasswordReset = async (e) => {
     e.preventDefault();
     let hasErrors = false;
 
@@ -109,17 +108,16 @@ const ForgotPassword = () => {
 
     if (hasErrors) return;
 
-    const usersDatabase = JSON.parse(localStorage.getItem('eazeit_users')) || [];
-    const updatedDb = usersDatabase.map((u) => {
-      if (u.email.toLowerCase() === lookupEmail.trim().toLowerCase()) {
-        return { ...u, password: newPassword };
-      }
-      return u;
-    });
-    localStorage.setItem('eazeit_users', JSON.stringify(updatedDb));
-
-    showToast('Password reset successful! Please login with your new password.');
-    setTimeout(() => navigate('/login'), 1500);
+    setResetting(true);
+    try {
+      await apiChangePassword(lookupEmail.trim().toLowerCase(), newPassword);
+      showToast('Password reset successful! Please login with your new password.');
+      setTimeout(() => navigate('/login'), 1500);
+    } catch (err) {
+      showToast(err.message || 'Failed to reset password. Please try again.', true);
+    } finally {
+      setResetting(false);
+    }
   };
 
   return (
@@ -135,7 +133,7 @@ const ForgotPassword = () => {
                   <span className="text-xl">&#128274;</span>
                 </div>
                 <h1 className="font-serif font-bold text-2xl text-white mb-2">Forgot Password</h1>
-                <p className="text-slate-400 text-sm text-center">Enter your registered email address and we'll let you reset your password.</p>
+                <p className="text-slate-400 text-sm text-center">Enter your registered email address to reset your password.</p>
               </div>
 
               <form id="email-lookup-form" onSubmit={handleEmailLookup} className="flex flex-col gap-5">
@@ -151,9 +149,9 @@ const ForgotPassword = () => {
                   {emailError && <span className="text-rose-500 text-[10px] mt-0.5">{emailError}</span>}
                 </div>
 
-                <button type="submit" id="lookup-btn"
-                  className="w-full mt-2 bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-teal-400/20">
-                  Verify Email &amp; Continue
+                <button type="submit" id="lookup-btn" disabled={checkingEmail}
+                  className="w-full mt-2 bg-teal-400 hover:bg-teal-500 disabled:opacity-60 text-slate-900 font-bold text-sm px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-teal-400/20">
+                  {checkingEmail ? 'Verifying…' : 'Verify Email & Continue'}
                 </button>
               </form>
 
@@ -210,9 +208,9 @@ const ForgotPassword = () => {
                   {confirmNewPasswordError && <span className="text-rose-500 text-[10px] mt-0.5">{confirmNewPasswordError}</span>}
                 </div>
 
-                <button type="submit"
-                  className="w-full mt-2 bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-teal-400/20">
-                  Reset Password
+                <button type="submit" disabled={resetting}
+                  className="w-full mt-2 bg-teal-400 hover:bg-teal-500 disabled:opacity-60 text-slate-900 font-bold text-sm px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-teal-400/20">
+                  {resetting ? 'Resetting…' : 'Reset Password'}
                 </button>
               </form>
 

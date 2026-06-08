@@ -229,4 +229,163 @@ const GetUserStats = async (req, res) => {
   }
 };
 
-module.exports = { SignUpUser, LoginUser, GetProfile, UpdateProfile, GetAllUsers, GetUserStats };
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/users/addresses/:email  — get saved addresses for a user
+// ─────────────────────────────────────────────────────────────────────────────
+const GetAddresses = async (req, res) => {
+  try {
+    const requestedEmail = req.params.email.toLowerCase();
+    if (req.user.role !== "admin" && req.user.email !== requestedEmail) {
+      return res.status(403).json({ message: "Access denied." });
+    }
+    const user = await User.findOne({ email: requestedEmail }).select("addresses");
+    if (!user) return res.status(404).json({ message: "User not found." });
+    res.status(200).json({ addresses: user.addresses || [] });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching addresses.", error: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/users/addresses/:email  — add a new address
+// ─────────────────────────────────────────────────────────────────────────────
+const AddAddress = async (req, res) => {
+  try {
+    const requestedEmail = req.params.email.toLowerCase();
+    if (req.user.role !== "admin" && req.user.email !== requestedEmail) {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    const { label, name, line1, line2, city, pincode, phone, isDefault } = req.body;
+    if (!name || !line1 || !city || !pincode || !phone) {
+      return res.status(400).json({ message: "Name, line1, city, pincode, and phone are required." });
+    }
+
+    const user = await User.findOne({ email: requestedEmail });
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    const newAddr = {
+      label:     label || "HOME",
+      name,
+      line1,
+      line2:     line2 || "",
+      city,
+      pincode,
+      phone,
+      isDefault: !!isDefault,
+    };
+
+    // If new address should be default, unset all others
+    if (newAddr.isDefault) {
+      user.addresses.forEach((a) => { a.isDefault = false; });
+    }
+    // If this is the first address, make it default
+    if (user.addresses.length === 0) {
+      newAddr.isDefault = true;
+    }
+
+    user.addresses.push(newAddr);
+    await user.save();
+
+    const saved = user.addresses[user.addresses.length - 1];
+    res.status(201).json({ message: "Address added.", address: saved, addresses: user.addresses });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding address.", error: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /api/users/addresses/:email/:addressId  — delete an address
+// ─────────────────────────────────────────────────────────────────────────────
+const DeleteAddress = async (req, res) => {
+  try {
+    const requestedEmail = req.params.email.toLowerCase();
+    if (req.user.role !== "admin" && req.user.email !== requestedEmail) {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    const user = await User.findOne({ email: requestedEmail });
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    const addrId = req.params.addressId;
+    const idx = user.addresses.findIndex((a) => String(a._id) === addrId);
+    if (idx === -1) return res.status(404).json({ message: "Address not found." });
+
+    const wasDefault = user.addresses[idx].isDefault;
+    user.addresses.splice(idx, 1);
+
+    // If deleted address was default, make first remaining default
+    if (wasDefault && user.addresses.length > 0) {
+      user.addresses[0].isDefault = true;
+    }
+
+    await user.save();
+    res.status(200).json({ message: "Address deleted.", addresses: user.addresses });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting address.", error: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PUT /api/users/change-password/:email  — change password (authenticated)
+// ─────────────────────────────────────────────────────────────────────────────
+const ChangePassword = async (req, res) => {
+  try {
+    const requestedEmail = req.params.email.toLowerCase();
+    if (req.user.role !== "admin" && req.user.email !== requestedEmail) {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters." });
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 12);
+    const updated = await User.findOneAndUpdate(
+      { email: requestedEmail },
+      { password: hashed },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ message: "User not found." });
+    res.status(200).json({ message: "Password changed successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error changing password.", error: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/users/check-email  — check if email exists (for forgot password flow)
+// Public endpoint
+// ─────────────────────────────────────────────────────────────────────────────
+const CheckEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required." });
+    const emailLower = email.toLowerCase().trim();
+
+    // Admin email always "exists" for forgot-password purposes
+    if (emailLower === ADMIN_EMAIL) {
+      return res.status(200).json({ exists: true });
+    }
+
+    const user = await User.findOne({ email: emailLower }).select("_id");
+    res.status(200).json({ exists: !!user });
+  } catch (error) {
+    res.status(500).json({ message: "Error checking email.", error: error.message });
+  }
+};
+
+module.exports = {
+  SignUpUser,
+  LoginUser,
+  GetProfile,
+  UpdateProfile,
+  GetAllUsers,
+  GetUserStats,
+  GetAddresses,
+  AddAddress,
+  DeleteAddress,
+  ChangePassword,
+  CheckEmail,
+};

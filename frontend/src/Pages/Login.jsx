@@ -78,7 +78,7 @@ const Login = () => {
     if (trimmedEmail === ADMIN_EMAIL.toLowerCase()) {
       if (password === ADMIN_PASSWORD) {
         const adminUser = { firstName: 'Admin', lastName: 'EAZEIT', email: ADMIN_EMAIL, role: 'admin' };
-        login(adminUser); // ← useAuth hook
+        login(adminUser);
         showToast('Admin login successful (Offline)! Redirecting…');
         setTimeout(() => navigate('/admin'), 1200);
       } else {
@@ -88,18 +88,9 @@ const Login = () => {
       return;
     }
 
-    // 3. Fallback: Regular user verification (offline)
-    const usersDatabase = JSON.parse(localStorage.getItem('eazeit_users')) || [];
-    const matched = usersDatabase.find((u) => u.email.toLowerCase() === trimmedEmail);
-
-    if (matched && matched.password === password) {
-      login(matched); // ← useAuth hook
-      showToast(`Welcome back, ${matched.firstName}! 🎉 (Offline)`);
-      setTimeout(() => navigate('/'), 1200);
-    } else {
-      showToast('Invalid email or password. Please try again.', true);
-      setPassword('');
-    }
+    // 3. Server is offline — regular users cannot login without backend
+    showToast('Server is currently unreachable. Please try again shortly.', true);
+    setPassword('');
   };
 
   return (

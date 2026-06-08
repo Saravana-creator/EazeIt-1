@@ -103,7 +103,10 @@ const Navbar = () => {
                     </button>
                   </div>
                 ) : (
-                  <Link to="/login" className="btn bg-teal-400 hover:bg-teal-500 text-slate-900 fw-semibold text-sm px-4 py-1.5 rounded-lg transition-all duration-200 active:scale-95 border-0">Login / Register</Link>
+                  <div className="d-flex align-items-center gap-2">
+                    <Link to="/login" className="text-slate-300 hover:text-teal-400 border border-slate-600 hover:border-teal-400 font-semibold text-sm px-4 py-1.5 rounded-lg transition-all duration-200 text-decoration-none">Login</Link>
+                    <Link to="/signup" className="btn bg-teal-400 hover:bg-teal-500 text-slate-900 fw-semibold text-sm px-4 py-1.5 rounded-lg transition-all duration-200 active:scale-95 border-0 text-decoration-none">Register</Link>
+                  </div>
                 )}
             </div>
 

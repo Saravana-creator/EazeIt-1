@@ -1,3 +1,5 @@
+// ── Cart is the only data kept in localStorage (ephemeral, per-device) ────────
+
 export function getJSON(key, fallback = null) {
   try {
     const raw = localStorage.getItem(key);
@@ -14,18 +16,7 @@ export function setJSON(key, value) {
 
 export const STORAGE_KEYS = {
   CART: 'eazeit_cart',
-  ORDERS: 'eazeit_orders',
-  ADDRESSES: 'eazeit_addresses',
-  CONTACT_MESSAGES: 'eazeit_contact_messages',
-  USERS: 'eazeit_users',
-  ADMIN_PRODUCTS: 'eazeit_admin_products',
 };
-
-export const SESSION_KEYS = {
-  ACTIVE_USER: 'eazeit_active_user',
-};
-
-
 
 export const FREE_DELIVERY_MIN = 500;
 export const DELIVERY_FEE = 10;

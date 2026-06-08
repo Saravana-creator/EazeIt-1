@@ -90,6 +90,49 @@ export async function apiUpdateProfile(email, profileData) {
   return normalized;
 }
 
+// ── Forgot Password: check email exists (public) ──────────────────────────────
+export async function apiCheckEmail(email) {
+  const data = await request('/users/check-email', {
+    method: 'POST',
+    body:   JSON.stringify({ email }),
+  });
+  return data.exists; // boolean
+}
+
+// ── Change password (authenticated) ──────────────────────────────────────────
+export async function apiChangePassword(email, newPassword) {
+  return await request(`/users/change-password/${encodeURIComponent(email)}`, {
+    method: 'PUT',
+    body:   JSON.stringify({ newPassword }),
+  });
+}
+
+// ── Address Endpoints ─────────────────────────────────────────────────────────
+
+export async function apiGetAddresses(email) {
+  const data = await request(`/users/addresses/${encodeURIComponent(email)}`);
+  // Normalize _id → id for frontend consistency
+  return (data.addresses || []).map((a) => ({ ...a, id: String(a._id) }));
+}
+
+export async function apiAddAddress(email, address) {
+  const data = await request(`/users/addresses/${encodeURIComponent(email)}`, {
+    method: 'POST',
+    body:   JSON.stringify(address),
+  });
+  // Return normalized list + the newly added address
+  const addresses = (data.addresses || []).map((a) => ({ ...a, id: String(a._id) }));
+  const added     = data.address ? { ...data.address, id: String(data.address._id) } : addresses[addresses.length - 1];
+  return { addresses, added };
+}
+
+export async function apiDeleteAddress(email, addressId) {
+  const data = await request(`/users/addresses/${encodeURIComponent(email)}/${addressId}`, {
+    method: 'DELETE',
+  });
+  return (data.addresses || []).map((a) => ({ ...a, id: String(a._id) }));
+}
+
 export async function apiSendFeedback(feedbackData) {
   const data = await request('/feedback', {
     method: 'POST',

@@ -2,14 +2,8 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import { useAuth } from '../Hooks';
-import {
-  getAddressesForUser,
-  addAddress,
-  getDefaultAddress,
-  seedDefaultAddresses,
-} from '../Utils/addresses';
 import { showToast } from '../Components/Toast';
-import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment } from '../Utils/api';
+import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment, apiGetAddresses, apiAddAddress } from '../Utils/api';
 import { resolveProductImage } from '../Utils/image';
 /** Dynamically loads the Razorpay checkout script */
 function loadRazorpayScript() {
@@ -66,11 +60,19 @@ const Checkout = () => {
   useEffect(() => {
     if (!user) { navigate('/login?redirect=/checkout'); return; }
     if (user.role === 'admin') { navigate('/admin'); return; }
-    seedDefaultAddresses(user.email);
-    const list = getAddressesForUser(user.email);
-    setAddresses(list);
-    const def = getDefaultAddress(user.email);
-    if (def) setSelectedAddressId(def.id);
+
+    // Load addresses from MongoDB
+    const loadAddresses = async () => {
+      try {
+        const list = await apiGetAddresses(user.email);
+        setAddresses(list);
+        const def = list.find((a) => a.isDefault) || list[0];
+        if (def) setSelectedAddressId(def.id);
+      } catch (err) {
+        showToast('Failed to load saved addresses.', true);
+      }
+    };
+    loadAddresses();
   }, [user, navigate]);
 
   useEffect(() => {
@@ -82,8 +84,8 @@ const Checkout = () => {
     [addresses, selectedAddressId]
   );
 
-  /* ── Add address ── */
-  const onAddAddress = (e) => {
+  /* ── Add address via API ── */
+  const onAddAddress = async (e) => {
     e.preventDefault();
     if (!user) return;
     if (!newAddress.name.trim() || !newAddress.line1.trim() || !newAddress.city.trim()) {
@@ -95,13 +97,16 @@ const Checkout = () => {
     if (!/^[6-9]\d{9}$/.test(newAddress.phone)) {
       showToast('Phone must be 10 digits starting with 6-9.', true); return;
     }
-    const added = addAddress(user.email, newAddress);
-    const updated = getAddressesForUser(user.email);
-    setAddresses(updated);
-    setSelectedAddressId(added.id);
-    setNewAddress(initialAddress);
-    setAddingAddress(false);
-    showToast('Address saved successfully! ✓');
+    try {
+      const { addresses: updatedList, added } = await apiAddAddress(user.email, newAddress);
+      setAddresses(updatedList);
+      setSelectedAddressId(added.id);
+      setNewAddress(initialAddress);
+      setAddingAddress(false);
+      showToast('Address saved successfully! ✓');
+    } catch (err) {
+      showToast(err.message || 'Failed to save address.', true);
+    }
   };
 
   /* ── Validate payment ── */
@@ -196,6 +201,13 @@ const Checkout = () => {
       return;
     }
 
+    const prefill = {
+      name:    user.firstName + ' ' + (user.lastName || ''),
+      email:   user.email,
+      contact: user.mobile || selectedAddress.phone,
+      ...(paymentMethod === 'UPI' ? { vpa: upiId } : {}),
+    };
+
     const options = {
       key:         rzpOrder.key,
       amount:      rzpOrder.amount,
@@ -203,13 +215,7 @@ const Checkout = () => {
       name:        'EAZEIT',
       description: 'Annachi Kadai — Quick Grocery',
       order_id:    rzpOrder.orderId,
-      prefill: {
-        name:    user.firstName + ' ' + (user.lastName || ''),
-        email:   user.email,
-        contact: user.mobile || selectedAddress.phone,
-        method:  paymentMethod === 'UPI' ? 'upi' : 'card',
-        ...(paymentMethod === 'UPI' ? { vpa: upiId } : {}),
-      },
+      prefill,
       theme: { color: '#2dd4bf' },
       modal: {
         ondismiss: () => {
