@@ -178,7 +178,7 @@ const Signup = () => {
           {/* Header */}
           <div className="flex flex-col items-center mb-8">
             <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-lg shadow-teal-400/20 mb-5">
-              <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-cover" />
+              <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-contain p-1.5" />
             </div>
             <h1 className="font-serif font-bold text-2xl text-white mb-1">Create Account</h1>
             <p className="text-slate-400 text-sm">Join EAZEIT for seamless grocery shopping</p>

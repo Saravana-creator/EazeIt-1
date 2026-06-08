@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="col-md-3 d-flex flex-column gap-3">
             <Link to="/" className="d-flex align-items-center gap-3 shrink-0 text-decoration-none">
               <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-teal-500 rounded-lg overflow-hidden border border-slate-700 shadow-md shadow-teal-400/10">
-                <img src={muiLogo} alt="E" className="w-full h-full object-cover" />
+                <img src={muiLogo} alt="E" className="w-full h-full object-contain p-1.5" />
               </div>
               <span className="font-serif font-extrabold text-base tracking-widest text-teal-400">EAZEIT</span>
             </Link>

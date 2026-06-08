@@ -131,7 +131,7 @@ const ForgotPassword = () => {
             <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 md:p-10 shadow-xl shadow-slate-950/50">
               <div className="flex flex-col items-center mb-8">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-lg shadow-teal-400/20 mb-5">
-                  <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-cover" />
+                  <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-contain p-1.5" />
                 </div>
                 <h1 className="font-serif font-bold text-2xl text-white mb-2">Forgot Password</h1>
                 <p className="text-slate-400 text-sm text-center">Enter your registered email address to reset your password.</p>
@@ -168,7 +168,7 @@ const ForgotPassword = () => {
             <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 md:p-10 shadow-xl shadow-slate-950/50">
               <div className="flex flex-col items-center mb-8">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-lg shadow-teal-400/20 mb-5">
-                  <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-cover" />
+                  <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-contain p-1.5" />
                 </div>
                 <h2 className="font-serif font-bold text-2xl text-white mb-1">Set New Password</h2>
                 <p className="text-teal-400 text-xs font-semibold">{lookupEmail}</p>

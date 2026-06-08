@@ -311,7 +311,7 @@ const Admin = () => {
       <header className="md:hidden flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 shrink-0 z-20">
         <Link to="/" className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-md overflow-hidden bg-slate-950 border border-slate-700 shadow-md shadow-teal-400/10">
-            <img src={muiLogo} alt="Eazeit" className="w-full h-full object-cover" />
+            <img src={muiLogo} alt="Eazeit" className="w-full h-full object-contain p-1.5" />
           </div>
           <span className="font-serif font-extrabold text-sm tracking-widest text-teal-400">ADMIN</span>
         </Link>
@@ -327,7 +327,7 @@ const Admin = () => {
         <div className="p-6 border-b border-slate-700 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-950 border border-slate-700 shadow-md shadow-teal-400/10">
-              <img src={muiLogo} alt="Eazeit" className="w-full h-full object-cover" />
+              <img src={muiLogo} alt="Eazeit" className="w-full h-full object-contain p-1.5" />
             </div>
             <div className="flex flex-col leading-none">
               <span className="font-serif font-extrabold text-base tracking-widest text-teal-400">EAZEIT</span>
