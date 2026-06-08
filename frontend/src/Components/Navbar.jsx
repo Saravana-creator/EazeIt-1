@@ -95,6 +95,9 @@ const Navbar = () => {
                         👑 Admin
                       </Link>
                     )}
+                    <Link to="/profile?tab=orders-tab" className="text-slate-300 hover:text-teal-400 font-semibold text-sm transition-colors duration-200 text-decoration-none">
+                      My Orders
+                    </Link>
                     <Link to="/profile" className="text-teal-400 hover:text-teal-300 font-semibold text-sm transition-colors duration-200 text-decoration-none flex items-center gap-1.5">
                       Hello, {user.firstName}
                     </Link>
@@ -134,6 +137,7 @@ const Navbar = () => {
                 {user.role === 'admin' && (
                   <Link to="/admin" className="text-purple-400 hover:text-purple-300 font-semibold py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">👑 Admin Panel</Link>
                 )}
+                <Link to="/profile?tab=orders-tab" className="text-slate-300 hover:text-teal-400 font-medium py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">My Orders</Link>
                 <Link to="/profile" className="text-slate-300 hover:text-teal-400 font-medium py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">My Profile</Link>
                 <button onClick={handleLogout} className="text-rose-400 hover:text-rose-300 font-medium py-2 border-bottom border-slate-700 text-sm text-left d-block transition-colors duration-200 bg-transparent border-0 w-full p-0">Logout</button>
               </>

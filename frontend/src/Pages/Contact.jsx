@@ -104,17 +104,20 @@ const Contact = () => {
     } catch (error) {
       console.warn('EmailJS send failed:', error.message);
       if (backendSaved) {
-        showToast('Your message is saved and will be emailed once EmailJS is configured.', true);
+        setFormData({ name: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '', email: user?.email || '', phone: '', subject: '', message: '' });
+        setSending(false);
+        showToast('Message submitted successfully (Email delivery pending). ✓');
+        return;
       } else {
         showToast('Unable to send the message right now. Please try again later.', true);
+        setSending(false);
+        return;
       }
-      setSending(false);
-      return;
     }
 
     setFormData({ name: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '', email: user?.email || '', phone: '', subject: '', message: '' });
     setSending(false);
-    showToast('Message sent successfully. We will get back to you soon.');
+    showToast('Message sent successfully. We will get back to you soon. ✓');
   };
 
   return (

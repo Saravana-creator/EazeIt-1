@@ -400,6 +400,48 @@ const CheckEmail = async (req, res) => {
   }
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /api/users/:email  — admin only: delete user
+// ─────────────────────────────────────────────────────────────────────────────
+const DeleteUser = async (req, res) => {
+  try {
+    const emailToDelete = req.params.email.toLowerCase().trim();
+    if (emailToDelete === ADMIN_EMAIL || emailToDelete === req.user.email) {
+      return res.status(400).json({ message: "Cannot delete the active admin account." });
+    }
+    const deleted = await User.findOneAndDelete({ email: emailToDelete });
+    if (!deleted) return res.status(404).json({ message: "User not found." });
+    res.status(200).json({ message: "User deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user.", error: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PUT /api/users/:email/role  — admin only: update user role
+// ─────────────────────────────────────────────────────────────────────────────
+const UpdateUserRole = async (req, res) => {
+  try {
+    const emailToUpdate = req.params.email.toLowerCase().trim();
+    const { role } = req.body;
+    if (!role || !["user", "admin"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role specified." });
+    }
+    if (emailToUpdate === ADMIN_EMAIL || emailToUpdate === req.user.email) {
+      return res.status(400).json({ message: "Cannot modify active admin account role." });
+    }
+    const updated = await User.findOneAndUpdate(
+      { email: emailToUpdate },
+      { role },
+      { new: true }
+    ).select("-password");
+    if (!updated) return res.status(404).json({ message: "User not found." });
+    res.status(200).json({ message: "User role updated successfully.", user: updated });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user role.", error: error.message });
+  }
+};
+
 module.exports = {
   SignUpUser,
   LoginUser,
@@ -412,4 +454,6 @@ module.exports = {
   DeleteAddress,
   ChangePassword,
   CheckEmail,
+  DeleteUser,
+  UpdateUserRole,
 };

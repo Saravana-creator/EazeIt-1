@@ -18,6 +18,7 @@ import { useAuth } from '../Hooks';
 import { usePasswordStrength } from '../Hooks';
 import { showToast } from '../Components/Toast';
 import { apiSignUp } from '../Utils/api';
+import { muiLogo } from '../Assets';
 
 /* ─── Eye toggle button — receives props: visible, onToggle, id ─────────── */
 const EyeButton = ({ visible, onToggle, id }) => (
@@ -176,7 +177,9 @@ const Signup = () => {
 
           {/* Header */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-500 rounded-2xl flex items-center justify-center font-serif font-extrabold text-2xl text-slate-900 shadow-lg shadow-teal-400/20 mb-5">E</div>
+            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-lg shadow-teal-400/20 mb-5">
+              <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-cover" />
+            </div>
             <h1 className="font-serif font-bold text-2xl text-white mb-1">Create Account</h1>
             <p className="text-slate-400 text-sm">Join EAZEIT for seamless grocery shopping</p>
           </div>

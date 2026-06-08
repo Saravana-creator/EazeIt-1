@@ -160,6 +160,21 @@ export async function apiGetUserStats() {
   return data; // { total, newToday }
 }
 
+export async function apiDeleteUser(email) {
+  const data = await request(`/users/${encodeURIComponent(email)}`, {
+    method: 'DELETE',
+  });
+  return data;
+}
+
+export async function apiUpdateUserRole(email, role) {
+  const data = await request(`/users/${encodeURIComponent(email)}/role`, {
+    method: 'PUT',
+    body:   JSON.stringify({ role }),
+  });
+  return data;
+}
+
 // ── Product Endpoints ─────────────────────────────────────────────────────────
 
 export async function apiGetProducts({ category, brand, search, sort } = {}) {

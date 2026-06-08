@@ -12,6 +12,8 @@ const {
   DeleteAddress,
   ChangePassword,
   CheckEmail,
+  DeleteUser,
+  UpdateUserRole,
 } = require("../Controllers/UserController");
 const { verifyToken, verifyAdmin } = require("../Utils/authMiddleware");
 
@@ -23,8 +25,10 @@ router.put("/change-password/:email", ChangePassword); // forgot-password: reset
 
 // ── Admin only ───────────────────────────────────────────────────────────────
 // NOTE: /stats must come before /:email to avoid param collision
-router.get("/stats", verifyToken, verifyAdmin, GetUserStats);
-router.get("/",      verifyToken, verifyAdmin, GetAllUsers);
+router.get("/stats",       verifyToken, verifyAdmin, GetUserStats);
+router.get("/",            verifyToken, verifyAdmin, GetAllUsers);
+router.delete("/:email",    verifyToken, verifyAdmin, DeleteUser);
+router.put("/:email/role", verifyToken, verifyAdmin, UpdateUserRole);
 
 // ── Protected (own user or admin) ────────────────────────────────────────────
 router.get("/profile/:email", verifyToken, GetProfile);

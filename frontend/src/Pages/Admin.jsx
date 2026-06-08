@@ -4,12 +4,15 @@ import { useProducts } from '../Context/ProductContext';
 import { useAuth } from '../Hooks';
 import { showToast } from '../Components/Toast';
 import { resolveProductImage } from '../Utils/image';
+import { muiLogo } from '../Assets';
 import {
   apiGetAllOrders,
   apiGetOrderStats,
   apiGetAllUsers,
   apiGetUserStats,
   apiUpdateOrderStatus,
+  apiDeleteUser,
+  apiUpdateUserRole,
 } from '../Utils/api';
 
 // ── Constants ──────────────────────────────────────────────────────────────
@@ -236,6 +239,32 @@ const Admin = () => {
     setEditingId(product.id || product._id);
   };
 
+  const handleRoleChange = async (email, newRole) => {
+    try {
+      await apiUpdateUserRole(email, newRole);
+      setUsers((prev) =>
+        prev.map((u) => (u.email === email ? { ...u, role: newRole } : u))
+      );
+      showToast(`User ${email} promoted to ${newRole} ✓`);
+    } catch (err) {
+      showToast('Error updating role: ' + err.message, true);
+    }
+  };
+
+  const handleDeleteUser = async (email) => {
+    if (!window.confirm(`Are you sure you want to delete user "${email}"? This action cannot be undone.`)) {
+      return;
+    }
+    try {
+      await apiDeleteUser(email);
+      setUsers((prev) => prev.filter((u) => u.email !== email));
+      setUserTotal((prev) => prev - 1);
+      showToast('User deleted successfully ✓');
+    } catch (err) {
+      showToast('Error deleting user: ' + err.message, true);
+    }
+  };
+
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await apiUpdateOrderStatus(orderId, newStatus);
@@ -281,7 +310,9 @@ const Admin = () => {
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 shrink-0 z-20">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-500 rounded-md flex items-center justify-center font-serif font-extrabold text-lg text-slate-900">E</div>
+          <div className="w-8 h-8 rounded-md overflow-hidden bg-slate-950 border border-slate-700 shadow-md shadow-teal-400/10">
+            <img src={muiLogo} alt="Eazeit" className="w-full h-full object-cover" />
+          </div>
           <span className="font-serif font-extrabold text-sm tracking-widest text-teal-400">ADMIN</span>
         </Link>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 flex flex-col gap-1">
@@ -295,7 +326,9 @@ const Admin = () => {
       <aside className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-800 border-r border-slate-700 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full`}>
         <div className="p-6 border-b border-slate-700 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-teal-500 rounded-lg flex items-center justify-center font-serif font-extrabold text-xl text-slate-900">E</div>
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-950 border border-slate-700 shadow-md shadow-teal-400/10">
+              <img src={muiLogo} alt="Eazeit" className="w-full h-full object-cover" />
+            </div>
             <div className="flex flex-col leading-none">
               <span className="font-serif font-extrabold text-base tracking-widest text-teal-400">EAZEIT</span>
               <span className="text-[8px] text-slate-400 tracking-[0.2em] uppercase mt-0.5">Admin Panel</span>
@@ -694,28 +727,47 @@ const Admin = () => {
                             <th className="px-4 py-3">Phone</th>
                             <th className="px-4 py-3">Role</th>
                             <th className="px-4 py-3">Joined</th>
+                            <th className="px-4 py-3 text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700/60">
-                          {users.map((u) => (
-                            <tr key={u._id} className="hover:bg-slate-700/20 transition-colors">
-                              <td className="px-4 py-3 font-semibold text-white">
-                                {u.firstname} {u.lastname}
-                              </td>
-                              <td className="px-4 py-3 text-slate-300 text-xs">{u.email}</td>
-                              <td className="px-4 py-3 text-slate-400 text-xs">{u.phone || '—'}</td>
-                              <td className="px-4 py-3">
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wide ${
-                                  u.role === 'admin'
-                                    ? 'bg-purple-400/10 text-purple-400 border-purple-400/20'
-                                    : 'bg-teal-400/10 text-teal-400 border-teal-400/20'
-                                }`}>
-                                  {u.role}
-                                </span>
-                              </td>
-                              <td className="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">{formatDate(u.createdAt)}</td>
-                            </tr>
-                          ))}
+                          {users.map((u) => {
+                            const isSelf = u.email.toLowerCase() === user.email.toLowerCase();
+                            return (
+                              <tr key={u._id} className="hover:bg-slate-700/20 transition-colors">
+                                <td className="px-4 py-3 font-semibold text-white">
+                                  {u.firstname} {u.lastname}
+                                </td>
+                                <td className="px-4 py-3 text-slate-300 text-xs">{u.email}</td>
+                                <td className="px-4 py-3 text-slate-400 text-xs">{u.phone || '—'}</td>
+                                <td className="px-4 py-3">
+                                  <select
+                                    value={u.role}
+                                    disabled={isSelf}
+                                    onChange={(e) => handleRoleChange(u.email, e.target.value)}
+                                    className={`text-xs font-semibold px-2 py-1 rounded-lg border bg-transparent cursor-pointer focus:outline-none transition-colors ${
+                                      u.role === 'admin'
+                                        ? 'bg-purple-400/5 text-purple-400 border-purple-400/20'
+                                        : 'bg-teal-400/5 text-teal-400 border-teal-400/20'
+                                    }`}
+                                  >
+                                    <option value="user" className="bg-slate-800 text-white">USER</option>
+                                    <option value="admin" className="bg-slate-800 text-white">ADMIN</option>
+                                  </select>
+                                </td>
+                                <td className="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">{formatDate(u.createdAt)}</td>
+                                <td className="px-4 py-3 text-right">
+                                  <button
+                                    onClick={() => handleDeleteUser(u.email)}
+                                    disabled={isSelf}
+                                    className="text-xs text-rose-500 hover:text-rose-400 font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                  >
+                                    Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>

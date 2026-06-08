@@ -11,6 +11,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePasswordStrength } from '../Hooks';
 import { showToast } from '../Components/Toast';
 import { apiCheckEmail, apiChangePassword } from '../Utils/api';
+import { muiLogo } from '../Assets';
 
 /* ─── Eye toggle button ─────────────────────────────────────────────────── */
 const EyeButton = ({ visible, onToggle, id }) => (
@@ -129,8 +130,8 @@ const ForgotPassword = () => {
           {step === 'step1' && (
             <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 md:p-10 shadow-xl shadow-slate-950/50">
               <div className="flex flex-col items-center mb-8">
-                <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-500 rounded-2xl flex items-center justify-center text-slate-900 shadow-lg shadow-teal-400/20 mb-5">
-                  <span className="text-xl">&#128274;</span>
+                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-lg shadow-teal-400/20 mb-5">
+                  <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-cover" />
                 </div>
                 <h1 className="font-serif font-bold text-2xl text-white mb-2">Forgot Password</h1>
                 <p className="text-slate-400 text-sm text-center">Enter your registered email address to reset your password.</p>
@@ -166,8 +167,8 @@ const ForgotPassword = () => {
           {step === 'step2' && (
             <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 md:p-10 shadow-xl shadow-slate-950/50">
               <div className="flex flex-col items-center mb-8">
-                <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-500 rounded-2xl flex items-center justify-center text-slate-900 shadow-lg shadow-teal-400/20 mb-5">
-                  <span className="text-xl">&#128274;</span>
+                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-lg shadow-teal-400/20 mb-5">
+                  <img src={muiLogo} alt="Eazeit Logo" className="w-full h-full object-cover" />
                 </div>
                 <h2 className="font-serif font-bold text-2xl text-white mb-1">Set New Password</h2>
                 <p className="text-teal-400 text-xs font-semibold">{lookupEmail}</p>
