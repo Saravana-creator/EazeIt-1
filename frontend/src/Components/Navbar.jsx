@@ -103,10 +103,7 @@ const Navbar = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="d-flex align-items-center gap-2">
-                    <Link to="/login" className="text-slate-300 hover:text-teal-400 border border-slate-600 hover:border-teal-400 font-semibold text-sm px-4 py-1.5 rounded-lg transition-all duration-200 text-decoration-none">Login</Link>
-                    <Link to="/signup" className="btn bg-teal-400 hover:bg-teal-500 text-slate-900 fw-semibold text-sm px-4 py-1.5 rounded-lg transition-all duration-200 active:scale-95 border-0 text-decoration-none">Register</Link>
-                  </div>
+                  <Link to="/login" className="btn bg-teal-400 hover:bg-teal-500 text-slate-900 fw-semibold text-sm px-5 py-1.5 rounded-lg transition-all duration-200 active:scale-95 border-0 text-decoration-none font-bold">Login</Link>
                 )}
             </div>
 
@@ -141,10 +138,7 @@ const Navbar = () => {
                 <button onClick={handleLogout} className="text-rose-400 hover:text-rose-300 font-medium py-2 border-bottom border-slate-700 text-sm text-left d-block transition-colors duration-200 bg-transparent border-0 w-full p-0">Logout</button>
               </>
             ) : (
-              <>
-                <Link to="/login" className="text-slate-300 hover:text-teal-400 font-medium py-2 border-bottom border-slate-700 text-sm d-block transition-colors duration-200 text-decoration-none">Login</Link>
-                <Link to="/signup" className="text-slate-300 hover:text-teal-400 font-medium py-2 text-sm d-block transition-colors duration-200 text-decoration-none">Register</Link>
-              </>
+              <Link to="/login" className="text-slate-300 hover:text-teal-400 font-medium py-2 text-sm d-block transition-colors duration-200 text-decoration-none">Login</Link>
             )}
         </div>
     </nav>

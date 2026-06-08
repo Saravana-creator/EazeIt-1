@@ -17,30 +17,49 @@ require("dotenv").config();
 
 const app = express();
 
-// ── Determine allowed origins ────────────────────────────────────────────────
-const rawAllowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.trim() : "*";
-const ALLOWED_ORIGINS = [
-  ...new Set(
-    rawAllowedOrigins
-      .split(",")
-      .map((o) => o.trim())
-      .filter((o) => o.length > 0)
-      .concat([
-        "https://eaze-it-1.vercel.app",
-        "https://eaze-it-1-mv8t3m4or-saravana-perumal-ms-projects.vercel.app",
-        "https://eaze-it-1-kzgs1st6v-saravana-perumal-ms-projects.vercel.app",
-        "https://eaze-it-1-ap8cacpuz-saravana-perumal-ms-projects.vercel.app",
-        "https://eaze-it-1-25uotlgey-saravana-perumal-ms-projects.vercel.app",
-      ])
-  ),
-];
-const ALLOW_ALL_ORIGINS = ALLOWED_ORIGINS.includes("*");
+// ── Determine allowed origins ─────────────────────────────────────────────────
+//
+// Strategy: pattern-based — allows:
+//   • Any *.vercel.app subdomain  (all preview + production Vercel deployments)
+//   • Any localhost:* port        (local development)
+//   • Any explicit origins listed in ALLOWED_ORIGINS env var
+//
+const EXPLICIT_ORIGINS = new Set(
+  (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean)
+);
 
-// In production, add your deployed frontend URL via .env ALLOWED_ORIGINS
-// e.g. ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app
-// If no ALLOWED_ORIGINS is defined, '*' is used as a fallback.
+const ALLOW_ALL_ORIGINS = EXPLICIT_ORIGINS.has("*");
 
-// ── Middleware ───────────────────────────────────────────────────────────────
+function isOriginAllowed(origin) {
+  if (!origin) return true;                          // same-origin / server-to-server
+  if (ALLOW_ALL_ORIGINS) return true;                // wildcard override
+  if (EXPLICIT_ORIGINS.has(origin)) return true;    // explicit whitelist from .env
+
+  try {
+    const { hostname, protocol } = new URL(origin);
+    // Allow all Vercel deployments (preview + production + team URLs)
+    if (hostname.endsWith(".vercel.app")) return true;
+    // Allow localhost on any port during development
+    if (
+      (hostname === "localhost" || hostname === "127.0.0.1") &&
+      (protocol === "http:" || protocol === "https:")
+    ) return true;
+  } catch {
+    // invalid URL — deny
+  }
+
+  return false;
+}
+
+// In production set ALLOWED_ORIGINS in your Render/Railway env vars to restrict
+// to your specific domain only, e.g.:
+//   ALLOWED_ORIGINS=https://eaze-it-1.vercel.app
+// During development leave it unset — localhost is always allowed.
+
+// ── Middleware ────────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -53,11 +72,11 @@ app.use(compression());
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || ALLOW_ALL_ORIGINS || ALLOWED_ORIGINS.includes(origin)) {
+    if (isOriginAllowed(origin)) {
       callback(null, true);
-      return;
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
     }
-    callback(new Error(`Origin ${origin} not allowed by CORS`));
   },
   credentials: true,
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
@@ -86,22 +105,7 @@ app.use("/api/orders",    orderRoutes);
 app.use("/api/payment",   paymentRoutes);
 app.use("/api/feedback",  feedbackRoutes);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-  });
-}
-
-// ── Health Check ─────────────────────────────────────────────────────────────
-app.get("/", (req, res) =>
-  res.json({
-    message: "🛒 Annachi Kadai API is running",
-    env:     process.env.NODE_ENV || "development",
-    version: "2.0.0",
-  })
-);
-
+// ── Health & Info endpoints (BEFORE static catch-all) ───────────────────────
 app.get("/api/health", (req, res) =>
   res.json({
     status:  "ok",
@@ -109,6 +113,22 @@ app.get("/api/health", (req, res) =>
     uptime:  process.uptime(),
   })
 );
+
+app.get("/api/info", (req, res) =>
+  res.json({
+    message: "🛒 EAZEIT API is running",
+    env:     process.env.NODE_ENV || "development",
+    version: "2.0.0",
+  })
+);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+  // SPA fallback — all non-API GET requests serve index.html
+  app.get(/^(?!\/api).*$/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+  });
+}
 
 // ── 404 Handler ──────────────────────────────────────────────────────────────
 app.use((req, res) => {

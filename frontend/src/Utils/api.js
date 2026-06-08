@@ -99,12 +99,18 @@ export async function apiCheckEmail(email) {
   return data.exists; // boolean
 }
 
-// ── Change password (authenticated) ──────────────────────────────────────────
+// ── Change password (public — used for forgot-password flow, no JWT) ──────────
 export async function apiChangePassword(email, newPassword) {
-  return await request(`/users/change-password/${encodeURIComponent(email)}`, {
-    method: 'PUT',
-    body:   JSON.stringify({ newPassword }),
+  const url      = `${API_BASE}/users/change-password/${encodeURIComponent(email)}`;
+  const response = await fetch(url, {
+    method:  'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ newPassword }),
+    mode:    'cors',
   });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Failed to change password');
+  return data;
 }
 
 // ── Address Endpoints ─────────────────────────────────────────────────────────
