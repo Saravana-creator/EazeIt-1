@@ -27,8 +27,8 @@ const EyeOff = () => (
   </svg>
 );
 
-const ADMIN_EMAIL    = 'admin@eazeit.in';
-const ADMIN_PASSWORD = 'Admin@123';
+const ADMIN_EMAIL    = 'suryasekar626@gmail.com';
+const ADMIN_PASSWORD = 'surya@123';
 
 const Login = () => {
   // ── Controlled input state ────────────────────────────────────────────────
