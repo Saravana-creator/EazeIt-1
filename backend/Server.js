@@ -61,7 +61,7 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-app.options("*", cors(corsOptions));
+// For preflight support, let the CORS middleware handle OPTIONS requests.
 app.use(cors(corsOptions));
 
 // ── Rate Limiting ────────────────────────────────────────────────────────────
