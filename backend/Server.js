@@ -27,6 +27,8 @@ const ALLOWED_ORIGINS = [
       .filter((o) => o.length > 0)
       .concat([
         "https://eaze-it-1-kzgs1st6v-saravana-perumal-ms-projects.vercel.app",
+        "https://eaze-it-1-ap8cacpuz-saravana-perumal-ms-projects.vercel.app",
+        "https://eaze-it-1-25uotlgey-saravana-perumal-ms-projects.vercel.app",
       ])
   ),
 ];
