@@ -40,24 +40,29 @@ const ALLOW_ALL_ORIGINS = ALLOWED_ORIGINS.includes("*");
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
-app.use(compression());
-
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (Postman, server-to-server, etc.)
-      if (!origin || ALLOW_ALL_ORIGINS || ALLOWED_ORIGINS.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS blocked: origin ${origin} not allowed`));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+  helmet({
+    crossOriginResourcePolicy: false,
   })
 );
+app.use(compression());
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || ALLOW_ALL_ORIGINS || ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+    console.warn(`CORS blocked: origin ${origin} not allowed`);
+    return callback(new Error(`CORS blocked: origin ${origin} not allowed`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 // ── Rate Limiting ────────────────────────────────────────────────────────────
 // Rate limiting has been disabled during initial creation and testing.
