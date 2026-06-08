@@ -1,7 +1,6 @@
 const express    = require("express");
 const mongoose   = require("mongoose");
 const cors       = require("cors");
-const rateLimit  = require("express-rate-limit");
 const helmet     = require("helmet");
 const compression= require("compression");
 const dns        = require("dns");
@@ -19,15 +18,23 @@ require("dotenv").config();
 const app = express();
 
 // ── Determine allowed origins ────────────────────────────────────────────────
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:3001,http://localhost:5173")
-  .split(",")
-  .map((o) => o.trim())
-  .filter((o) => o.length > 0);
+const rawAllowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.trim() : "*";
+const ALLOWED_ORIGINS = [
+  ...new Set(
+    rawAllowedOrigins
+      .split(",")
+      .map((o) => o.trim())
+      .filter((o) => o.length > 0)
+      .concat([
+        "https://eaze-it-1-kzgs1st6v-saravana-perumal-ms-projects.vercel.app",
+      ])
+  ),
+];
 const ALLOW_ALL_ORIGINS = ALLOWED_ORIGINS.includes("*");
 
-// In production, you can add your deployed frontend URL via .env ALLOWED_ORIGINS
+// In production, add your deployed frontend URL via .env ALLOWED_ORIGINS
 // e.g. ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app
-// Or use '*' to allow any origin when needed.
+// If no ALLOWED_ORIGINS is defined, '*' is used as a fallback.
 
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
@@ -53,27 +60,8 @@ app.use(
 );
 
 // ── Rate Limiting ────────────────────────────────────────────────────────────
-// General API limiter — 200 requests per 15 minutes per IP
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: "Too many requests. Please try again later." },
-});
-
-// Strict limiter for auth endpoints — prevent brute force
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: "Too many login attempts. Please try again after 15 minutes." },
-});
-
-app.use("/api", generalLimiter);
-app.use("/api/users/login",  authLimiter);
-app.use("/api/users/signup", authLimiter);
+// Rate limiting has been disabled during initial creation and testing.
+// Re-enable only after the application is stable and fully deployed.
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 const userRoutes    = require("./Routers/UserRoutes");
