@@ -19,13 +19,15 @@ require("dotenv").config();
 const app = express();
 
 // ── Determine allowed origins ────────────────────────────────────────────────
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000")
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:3001,http://localhost:5173")
   .split(",")
   .map((o) => o.trim())
-  .filter(Boolean);
+  .filter((o) => o.length > 0);
+const ALLOW_ALL_ORIGINS = ALLOWED_ORIGINS.includes("*");
 
 // In production, you can add your deployed frontend URL via .env ALLOWED_ORIGINS
 // e.g. ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app
+// Or use '*' to allow any origin when needed.
 
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
@@ -38,7 +40,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (Postman, server-to-server, etc.)
-      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      if (!origin || ALLOW_ALL_ORIGINS || ALLOWED_ORIGINS.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`CORS blocked: origin ${origin} not allowed`));
