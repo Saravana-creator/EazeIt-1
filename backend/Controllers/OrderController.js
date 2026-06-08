@@ -1,5 +1,7 @@
 const Order = require("../Models/OrderModel");
 
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@eazeit.in").toLowerCase();
+
 const DELIVERY_FREE_THRESHOLD = 500;
 const DELIVERY_FEE_AMOUNT = 10;
 
@@ -99,7 +101,12 @@ const GetUserOrders = async (req, res) => {
       return res.status(403).json({ message: "Access denied." });
     }
 
-    const orders = await Order.find({ userEmail: requestedEmail }).sort({ placedAt: -1 });
+    let orders;
+    if (req.user.role === "admin" && requestedEmail === ADMIN_EMAIL) {
+      orders = await Order.find().sort({ placedAt: -1 });
+    } else {
+      orders = await Order.find({ userEmail: requestedEmail }).sort({ placedAt: -1 });
+    }
     res.status(200).json({ orders, count: orders.length });
   } catch (error) {
     res.status(500).json({ message: "Error fetching orders.", error: error.message });

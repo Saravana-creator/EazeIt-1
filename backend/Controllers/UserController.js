@@ -145,6 +145,18 @@ const GetProfile = async (req, res) => {
       return res.status(403).json({ message: "Access denied." });
     }
 
+    if (requestedEmail === ADMIN_EMAIL) {
+      return res.status(200).json({
+        user: {
+          firstname: "Admin",
+          lastname:  "EAZEIT",
+          email:     ADMIN_EMAIL,
+          phone:     "",
+          role:      "admin",
+        }
+      });
+    }
+
     const user = await User.findOne({ email: requestedEmail }).select("-password");
     if (!user) return res.status(404).json({ message: "User not found." });
     res.status(200).json({ user });
@@ -164,6 +176,19 @@ const UpdateProfile = async (req, res) => {
     }
 
     const { firstname, lastname, phone } = req.body;
+    if (requestedEmail === ADMIN_EMAIL) {
+      return res.status(200).json({
+        message: "Static admin profile update simulation succeeded.",
+        user: {
+          firstname: firstname || "Admin",
+          lastname:  lastname || "EAZEIT",
+          email:     ADMIN_EMAIL,
+          phone:     phone || "",
+          role:      "admin",
+        }
+      });
+    }
+
     const updated = await User.findOneAndUpdate(
       { email: requestedEmail },
       { firstname, lastname, phone },
@@ -237,6 +262,9 @@ const GetAddresses = async (req, res) => {
     const requestedEmail = req.params.email.toLowerCase();
     if (req.user.role !== "admin" && req.user.email !== requestedEmail) {
       return res.status(403).json({ message: "Access denied." });
+    }
+    if (requestedEmail === ADMIN_EMAIL) {
+      return res.status(200).json({ addresses: [] });
     }
     const user = await User.findOne({ email: requestedEmail }).select("addresses");
     if (!user) return res.status(404).json({ message: "User not found." });
