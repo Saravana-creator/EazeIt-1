@@ -39,7 +39,7 @@ async function request(path, options = {}) {
   };
 
   const url      = `${API_BASE}${path}`;
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { ...options, headers, mode: 'cors' });
   const data     = await response.json();
 
   if (!response.ok) {

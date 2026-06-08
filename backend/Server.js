@@ -48,7 +48,13 @@ app.use(
 app.use(compression());
 
 const corsOptions = {
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin || ALLOW_ALL_ORIGINS || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -56,15 +62,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-    return res.sendStatus(204);
-  }
-  next();
-});
+app.options('*', cors(corsOptions));
 
 // ── Rate Limiting ────────────────────────────────────────────────────────────
 // Rate limiting has been disabled during initial creation and testing.

@@ -38,6 +38,14 @@ const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
   reader.readAsDataURL(file);
 });
 
+const normalizeAdminImage = (value) => {
+  const resolved = resolveProductImage(value);
+  if (!resolved && value?.trim()) {
+    showToast('Google Drive links are not supported. Please upload a file or use a direct image URL.', true);
+  }
+  return resolved;
+};
+
 // ── Stat Card ─────────────────────────────────────────────────────────────
 const StatCard = ({ label, value, sub, color = 'text-white' }) => (
   <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-sm">
@@ -480,9 +488,9 @@ const Admin = () => {
                       type="text"
                       value={addForm.image}
                       onChange={(e) => setAddForm({ ...addForm, image: e.target.value })}
-                      onBlur={(e) => setAddForm((prev) => ({ ...prev, image: resolveProductImage(e.target.value) }))}
+                      onBlur={(e) => setAddForm((prev) => ({ ...prev, image: normalizeAdminImage(e.target.value) }))}
                       className={inputCls}
-                      placeholder="Paste any image URL or Google Drive share link"
+                      placeholder="Paste a direct image URL or upload a file"
                     />
                     <input
                       type="file"
@@ -490,7 +498,7 @@ const Admin = () => {
                       onChange={handleAddImageFile}
                       className="mt-2 text-sm text-slate-300 file:bg-slate-700 file:border-0 file:px-3 file:py-2 file:rounded-lg file:text-sm file:text-teal-400"
                     />
-                    <p className="text-xs text-slate-500">Upload JPEG/PNG/WebP or paste a Google Drive image link. Uploaded files are shown immediately.</p>
+                    <p className="text-xs text-slate-500">Upload JPEG/PNG/WebP or paste a direct image URL. Google Drive links are not supported.</p>
                     {addForm.image && (
                       <img src={resolveProductImage(addForm.image)} alt="preview" className="mt-2 h-24 w-24 object-cover rounded-lg border border-slate-600" onError={(e) => { e.target.style.display = 'none'; }} />
                     )}
@@ -779,9 +787,9 @@ const Admin = () => {
                   type="text"
                   value={editForm.image}
                   onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
-                  onBlur={(e) => setEditForm((prev) => ({ ...prev, image: resolveProductImage(e.target.value) }))}
+                  onBlur={(e) => setEditForm((prev) => ({ ...prev, image: normalizeAdminImage(e.target.value) }))}
                   className={inputCls}
-                  placeholder="Paste any image URL or Google Drive share link"
+                  placeholder="Paste a direct image URL or upload a file"
                 />
                 <input
                   type="file"
@@ -789,7 +797,7 @@ const Admin = () => {
                   onChange={handleEditImageFile}
                   className="mt-2 text-sm text-slate-300 file:bg-slate-700 file:border-0 file:px-3 file:py-2 file:rounded-lg file:text-sm file:text-teal-400"
                 />
-                <p className="text-xs text-slate-500">Upload JPEG/PNG/WebP or paste a Google Drive image link. Uploaded files show instantly.</p>
+                <p className="text-xs text-slate-500">Upload JPEG/PNG/WebP or paste a direct image URL. Google Drive links are not supported.</p>
                 {editForm.image && (
                   <img src={resolveProductImage(editForm.image)} alt="preview" className="mt-2 h-20 w-20 object-cover rounded-lg border border-slate-600" onError={(e) => { e.target.style.display = 'none'; }} />
                 )}
