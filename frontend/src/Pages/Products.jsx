@@ -57,9 +57,22 @@ const CAT_ICON = {
   ),
 };
 
+/* ── Skeleton card for loading state ─────────────────────────────────────── */
+const SkeletonCard = () => (
+  <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col">
+    <div className="skeleton w-full" style={{height:'192px'}} />
+    <div className="p-5 flex flex-col gap-3">
+      <div className="skeleton h-3 w-1/3 rounded" />
+      <div className="skeleton h-4 w-3/4 rounded" />
+      <div className="skeleton h-3 w-1/2 rounded" />
+      <div className="skeleton h-8 w-full rounded-lg mt-2" />
+    </div>
+  </div>
+);
+
 const Products = () => {
   // ── Context / Router hooks ────────────────────────────────────────────────
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
   const [searchParams] = useSearchParams();
 
   // ── Filter & Search State ─────────────────────────────────────────────────
@@ -340,7 +353,12 @@ const Products = () => {
             )}
 
             {/* Product Grid – uses reusable ProductCard component with product prop */}
-            {filteredProducts.length === 0 ? (
+            {loading ? (
+              /* Skeleton loading state */
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({length: 6}).map((_, i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : filteredProducts.length === 0 ? (
               <div className="py-20 flex flex-col items-center gap-4 text-center">
                 <div className="text-5xl">&#128269;</div>
                 <h3 className="text-lg font-bold text-white">No products found</h3>
@@ -354,9 +372,9 @@ const Products = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  /* Each ProductCard receives a product prop */
-                  <ProductCard key={product.id} product={product} />
+                {filteredProducts.map((product, idx) => (
+                  /* Each ProductCard receives product + index props for staggered animation */
+                  <ProductCard key={product.id} product={product} index={idx} />
                 ))}
               </div>
             )}

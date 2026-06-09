@@ -18,7 +18,14 @@ export function ProductProvider({ children }) {
           ...p,
           id: p._id || p.id,
         }));
-        setProducts(mappedProds);
+        // Deduplicate by id to prevent the same product rendering twice
+        const seen = new Set();
+        const uniqueProds = mappedProds.filter((p) => {
+          if (seen.has(p.id)) return false;
+          seen.add(p.id);
+          return true;
+        });
+        setProducts(uniqueProds);
       } catch (error) {
         console.error('Failed to load products from backend:', error.message);
         showToast('Failed to load products. Please check your connection.', true);

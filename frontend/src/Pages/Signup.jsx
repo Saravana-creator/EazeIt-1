@@ -172,7 +172,10 @@ const Signup = () => {
 
   return (
     <>
-      <main className="flex-1 flex items-center justify-center py-12 px-4 bg-slate-900 min-h-[calc(100vh-200px)]">
+      <main className="flex items-center justify-center py-12 px-4 bg-slate-900 min-h-screen relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-400/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-400/5 rounded-full blur-3xl pointer-events-none" />
         <div className="w-full max-w-md bg-slate-800 border border-slate-700 rounded-2xl p-8 md:p-10 shadow-xl shadow-slate-950/50">
 
           {/* Header */}

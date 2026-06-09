@@ -90,3 +90,69 @@ select:focus-visible {
 .animate-fade-in {
     animation: fadeIn 0.2s ease-out;
 }
+
+/* ── Product Card Entrance ── */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Profile Dropdown Entrance ── */
+@keyframes fadeSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ── Skeleton Shimmer ── */
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 800px 100%;
+    animation: shimmer 1.4s infinite linear;
+    border-radius: 8px;
+}
+
+/* ── Badge Pulse Glow ── */
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.3); }
+    50%       { box-shadow: 0 0 0 6px rgba(45, 212, 191, 0); }
+}
+
+/* ── Scale-in pop ── */
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Scroll-reveal utility ── */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Staggered card animation utility ── */
+.product-card-enter {
+    animation: fadeSlideUp 0.45s ease-out both;
+}
+

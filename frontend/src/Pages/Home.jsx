@@ -4,15 +4,31 @@ import { useProducts } from '../Context/ProductContext';
 import { resolveProductImage } from '../Utils/image';
 import ProductCard from '../Components/ProductCard';
 
+/* ── useScrollReveal: triggers .reveal.visible on elements entering viewport ── */
+const useScrollReveal = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); observer.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+};
+
 /**
  * Home Page
  * ---------
  * Features:
  *  - Hero section with animated headline
- *  - Features bar
- *  - Category showcase
+ *  - Features bar (scroll-reveal)
+ *  - Category showcase (scroll-reveal)
  *  - Auto-rotating product carousel (3s interval, arrows + dots)
- *  - Why Choose Us section
+ *  - Why Choose Us section (scroll-reveal)
  */
 
 const CATEGORY_SHOWCASES = [
@@ -140,7 +156,7 @@ const ProductCarousel = ({ products }) => {
             }`}
             style={{ transition: 'opacity 0.4s ease, transform 0.4s ease' }}
           >
-            <ProductCard product={products[idx]} compact />
+            <ProductCard product={products[idx]} compact index={pos} />
           </div>
         ))}
       </div>
@@ -210,6 +226,12 @@ const ProductCarousel = ({ products }) => {
 const Home = () => {
   const { products } = useProducts();
 
+  // Scroll-reveal refs for major sections
+  const featuresRef   = useScrollReveal();
+  const categoriesRef = useScrollReveal();
+  const carouselRef   = useScrollReveal();
+  const whyRef        = useScrollReveal();
+
   const categoryCounts = products.reduce((acc, p) => {
     acc[p.category] = (acc[p.category] || 0) + 1;
     return acc;
@@ -278,7 +300,7 @@ const Home = () => {
                   <div key={p.id} className={i === 0 ? 'col-12' : 'col-6'}>
                     <div className={`rounded-xl border border-slate-700 bg-slate-800 overflow-hidden ${i === 0 ? 'h-60 md:h-72' : 'h-36 md:h-40'} flex items-center justify-center`}>
                       {p.image ? (
-                        <img src={resolveProductImage(p.image)} alt={p.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                        <img src={resolveProductImage(p.image)} alt={p.name} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                       ) : (
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 text-slate-600">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
@@ -305,7 +327,7 @@ const Home = () => {
       </section>
 
       {/* ===== FEATURES BAR ===== */}
-      <div className="bg-slate-800 border-y border-slate-700 py-5">
+      <div ref={featuresRef} className="reveal bg-slate-800 border-y border-slate-700 py-5">
         <div className="container-xl px-4">
           <div className="flex flex-wrap justify-around items-center gap-6">
             {FEATURES.map(({ icon, title, sub }) => (
@@ -322,7 +344,7 @@ const Home = () => {
       </div>
 
       {/* ===== CATEGORIES ===== */}
-      <section className="py-16 md:py-20 bg-slate-800">
+      <section ref={categoriesRef} className="reveal py-16 md:py-20 bg-slate-800">
         <div className="container-xl px-4">
           <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-white text-center mb-2">
             Shop By <span className="text-teal-400">Category</span>
@@ -336,11 +358,11 @@ const Home = () => {
                 <div key={cat.catKey} className="col-6 col-lg-3">
                   <Link
                     to={`/products?category=${encodeURIComponent(cat.catKey)}`}
-                    className="d-block group text-center bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all duration-300 hover:border-teal-400 hover:-translate-y-1 hover:shadow-xl text-decoration-none"
+                    className="d-block group text-center bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all duration-300 hover:border-teal-400 hover:-translate-y-1.5 hover:shadow-xl text-decoration-none"
                   >
                     <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-2 border-slate-700 group-hover:border-teal-400 transition-colors duration-300 flex items-center justify-center bg-slate-800">
                       {sample ? (
-                        <img src={resolveProductImage(sample.image)} alt={cat.label} className="w-full h-full object-cover" />
+                        <img src={resolveProductImage(sample.image)} alt={cat.label} loading="lazy" className="w-full h-full object-cover" />
                       ) : (
                         CAT_SVG[cat.catKey] || <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-8 h-8 text-teal-400"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
                       )}
@@ -356,7 +378,7 @@ const Home = () => {
       </section>
 
       {/* ===== FEATURED PRODUCTS — AUTO-ROTATING CAROUSEL ===== */}
-      <section className="py-16 md:py-20 bg-slate-900">
+      <section ref={carouselRef} className="reveal py-16 md:py-20 bg-slate-900">
         <div className="container-xl px-4">
           <div className="text-center mb-10">
             <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-white mb-2">
@@ -392,7 +414,7 @@ const Home = () => {
       </section>
 
       {/* ===== WHY CHOOSE US ===== */}
-      <section className="py-16 md:py-20 bg-slate-800">
+      <section ref={whyRef} className="reveal py-16 md:py-20 bg-slate-800">
         <div className="container-xl px-4">
           <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-white text-center mb-2">
             Why Choose <span className="text-teal-400">EAZEIT</span>
@@ -403,9 +425,12 @@ const Home = () => {
               { stat: `${products.length}+`, label: 'Products Available', desc: 'A wide selection across all categories.' },
               { stat: '24hrs',               label: 'Fast Delivery',       desc: 'Same day delivery for orders before 2 PM.' },
               { stat: '100%',                label: 'Quality Guaranteed',  desc: 'Every product is sourced from trusted brands.' },
-            ].map(({ stat, label, desc }) => (
+            ].map(({ stat, label, desc }, i) => (
               <div key={label} className="col-md-4">
-                <div className="h-100 bg-slate-900 border border-slate-700 rounded-2xl p-6 text-center hover:border-teal-400/50 transition-colors duration-300">
+                <div
+                  className="h-100 bg-slate-900 border border-slate-700 rounded-2xl p-6 text-center hover:border-teal-400/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+                  style={{ animationDelay: `${i * 120}ms` }}
+                >
                   <div className="font-serif font-extrabold text-4xl text-teal-400 mb-3">{stat}</div>
                   <h3 className="font-bold text-white text-lg mb-2">{label}</h3>
                   <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>

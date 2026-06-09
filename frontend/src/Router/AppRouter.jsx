@@ -50,16 +50,17 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
-// ── AppLayout — wraps pages with Navbar + Footer (hidden on /admin) ───────────
+// ── AppLayout — wraps pages with Navbar + Footer (hidden on /admin, /login, /signup, /forgot-password) ─
 const AppLayout = ({ children }) => {
   const location = useLocation();
-  const isAdmin  = location.pathname.toLowerCase() === '/admin';
+  const NO_CHROME_ROUTES = ['/admin', '/login', '/signup', '/forgot-password'];
+  const isNoChrome = NO_CHROME_ROUTES.includes(location.pathname.toLowerCase());
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#0f172a', color: '#fff' }}>
-      {!isAdmin && <Navbar />}
+      {!isNoChrome && <Navbar />}
       <main style={{ flex: 1 }}>{children}</main>
-      {!isAdmin && <Footer />}
+      {!isNoChrome && <Footer />}
     </div>
   );
 };

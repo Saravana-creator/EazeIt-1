@@ -4,25 +4,27 @@
  * Central barrel export for all product and UI images.
  * Import from this file anywhere in the project:
  *
- *   import { colgate, harpic, godrejSoap, goodknight, closeup } from '../assets';
+ *   import { colgate, harpic, godrejSoap, goodknight, closeup, margoSoap, laysChilli, garamMasala, wheatFlour } from '../Assets';
  *
- * The public URL equivalents (used for seeded product image paths) are:
- *   'images/colgate.png', 'images/harpic.png', etc.
+ * All images are compressed JPEGs (4–8 KB each) for fast loading.
  */
 
-import colgate    from './colgate.png';
-import harpic     from './harpic.png';
-import godrejSoap from './godrej-soap.png';
-import goodknight from './goodknight.png';
-import closeup    from './closeup.png';
-import muiLogo    from './material-ui-logo.svg';
+import colgate     from './colgate.jpg';
+import harpic      from './harpic.jpg';
+import godrejSoap  from './godrejSoap.jpg';
+import goodknight  from './goodknight.jpg';
+import closeup     from './closeup.jpg';
+import margoSoap   from './margoSoap.jpg';
+import laysChilli  from './laysChilli.jpg';
+import garamMasala from './garamMasala.jpg';
+import wheatFlour  from './wheatFlour.jpg';
+import muiLogo     from './material-ui-logo.svg';
 
-export { colgate, harpic, godrejSoap, goodknight, closeup, muiLogo };
+export { colgate, harpic, godrejSoap, goodknight, closeup, margoSoap, laysChilli, garamMasala, wheatFlour, muiLogo };
 
 /**
- * SEED_PRODUCTS — the 5 initial products populated by the Admin system on first load.
- * These use the public /images/ path so they work after a production build too.
- *
+ * SEED_PRODUCTS — the initial products populated on first load.
+ * These use compressed JPEGs (~5 KB each) for fast performance.
  * The Admin panel can edit or delete any of these products.
  * No product is ever hardcoded in the UI — everything comes from ProductContext.
  */
@@ -86,5 +88,53 @@ export const SEED_PRODUCTS = [
     badge: '',
     image: closeup,
     addedAt: '2026-01-01T00:00:04.000Z',
+  },
+  {
+    id: 'seed-6',
+    name: 'Margo Neem Soap',
+    category: 'Bath & Body',
+    brand: 'Margo',
+    price: 45,
+    mrp: 55,
+    unit: 'Pack of 3 x 75g',
+    badge: 'Natural',
+    image: margoSoap,
+    addedAt: '2026-01-01T00:00:05.000Z',
+  },
+  {
+    id: 'seed-7',
+    name: "Lay's Chilli Flavour Chips",
+    category: 'Food & Snacks',
+    brand: "Lay's",
+    price: 20,
+    mrp: 20,
+    unit: '26g Pack',
+    badge: 'Hot Pick',
+    image: laysChilli,
+    addedAt: '2026-01-01T00:00:06.000Z',
+  },
+  {
+    id: 'seed-8',
+    name: 'Garam Masala Blend',
+    category: 'Food & Snacks',
+    brand: 'House Brand',
+    price: 65,
+    mrp: 80,
+    unit: '100g Jar',
+    badge: 'Offer',
+    image: garamMasala,
+    addedAt: '2026-01-01T00:00:07.000Z',
+  },
+  {
+    id: 'seed-9',
+    name: 'Wheat Flour (Atta)',
+    category: 'Food & Snacks',
+    brand: 'Aashirvaad',
+    price: 210,
+    mrp: 235,
+    unit: '5 kg Bag',
+    badge: 'Daily Essential',
+    image: wheatFlour,
+    addedAt: '2026-01-01T00:00:08.000Z',
   },
 ];

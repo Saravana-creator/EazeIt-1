@@ -22,13 +22,16 @@ const CAT_EMOJI = {
  * Props:
  *  - product  {object}  Product data (id, name, category, brand, price, mrp, unit, badge, image)
  *  - compact  {boolean} Smaller card style (used on Home page)
+ *  - index    {number}  Used for staggered entrance animation delay
  *
  * Features:
  *  - +/- qty stepper directly on card (no redirect)
  *  - Buy Now → goes to cart
  *  - Discount % badge when mrp > price
+ *  - Staggered fade-in entrance animation
+ *  - Lazy image loading for performance
  */
-const ProductCard = ({ product, compact = false }) => {
+const ProductCard = ({ product, compact = false, index = 0 }) => {
   const navigate = useNavigate();
   const { cartItems, addToCart, updateQty, removeFromCart } = useCart();
   const { user } = useAuth();
@@ -42,9 +45,11 @@ const ProductCard = ({ product, compact = false }) => {
 
   const [adding, setAdding] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
     setImgError(false);
+    setImgLoaded(false);
   }, [product.image]);
 
   const discount =
@@ -81,19 +86,33 @@ const ProductCard = ({ product, compact = false }) => {
     }
   }, [product, pid, addToCart, user, navigate]);
 
+  // Staggered delay based on index (capped at 500ms for large grids)
+  const animDelay = Math.min(index * 60, 500);
+
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-teal-400 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between h-full">
+    <div
+      className="product-card-enter bg-slate-800 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-teal-400 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-teal-400/10 flex flex-col justify-between h-full"
+      style={{ animationDelay: `${animDelay}ms` }}
+    >
 
       {/* ── Product Image ── */}
       <div
         className="relative w-full bg-slate-800 border-b border-slate-700 overflow-hidden flex items-center justify-center"
         style={{ height: compact ? '160px' : '192px' }}
       >
+        {/* Skeleton placeholder while image loads */}
+        {product.image && !imgError && !imgLoaded && (
+          <div className="skeleton absolute inset-0" />
+        )}
+
         {product.image && !imgError ? (
           <img
             src={resolveProductImage(product.image)}
             alt={product.name}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            className={`w-full h-full object-cover hover:scale-110 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            style={{ transition: 'opacity 0.3s ease, transform 0.5s ease' }}
+            onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
           />
         ) : (
@@ -104,7 +123,10 @@ const ProductCard = ({ product, compact = false }) => {
 
         {/* Badge */}
         {product.badge && (
-          <span className="absolute top-3 left-3 bg-teal-400 text-slate-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider">
+          <span
+            className="absolute top-3 left-3 bg-teal-400 text-slate-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider"
+            style={{ animation: 'pulseGlow 2s ease-in-out infinite' }}
+          >
             {product.badge}
           </span>
         )}
