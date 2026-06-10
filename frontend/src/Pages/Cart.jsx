@@ -115,7 +115,7 @@ const Cart = () => {
                         className="w-8 h-8 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:bg-teal-400/10 hover:border-teal-400/50 transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-slate-600"
                         aria-label="Decrease quantity"
                       >
-                        âˆ’
+                        -
                       </button>
                       <span className="w-8 text-center font-semibold text-white">{item.qty}</span>
                       <button

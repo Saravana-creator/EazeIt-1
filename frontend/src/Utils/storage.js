@@ -34,8 +34,8 @@ export function getActiveUser() {
   }
 }
 
-export const FREE_DELIVERY_MIN = 299;
-export const DELIVERY_FEE = 40;
+export const FREE_DELIVERY_MIN = 300;
+export const DELIVERY_FEE = 20;
 
 export function calcDeliveryFee(subtotal) {
   return subtotal >= FREE_DELIVERY_MIN ? 0 : DELIVERY_FEE;
