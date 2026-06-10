@@ -80,7 +80,14 @@ export function ProductProvider({ children }) {
   const refreshProducts = useCallback(async () => {
     try {
       const apiProds = await apiGetProducts();
-      setProducts(apiProds.map((p) => ({ ...p, id: p._id || p.id })));
+      const mappedProds = apiProds.map((p) => ({ ...p, id: p._id || p.id }));
+      const seen = new Set();
+      const uniqueProds = mappedProds.filter((p) => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
+      setProducts(uniqueProds);
     } catch (error) {
       showToast('Failed to refresh products.', true);
     }

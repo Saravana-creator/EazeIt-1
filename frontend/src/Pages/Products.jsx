@@ -174,6 +174,17 @@ const Products = () => {
     clearPriceFilter();
   };
 
+  const gridLayoutClass =
+    filteredProducts.length === 1
+      ? 'lg:grid-cols-1 max-w-md mx-auto'
+      : filteredProducts.length === 2
+        ? 'lg:grid-cols-2 max-w-3xl mx-auto'
+        : filteredProducts.length === 3
+          ? 'lg:grid-cols-3 max-w-5xl mx-auto'
+          : filteredProducts.length === 4
+            ? 'lg:grid-cols-2 xl:grid-cols-4 max-w-6xl mx-auto'
+            : 'lg:grid-cols-3';
+
   return (
     <>
       {/*  ===== PAGE HEADER =====  */}
@@ -200,7 +211,7 @@ const Products = () => {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
 
           {/*  Sidebar  */}
-          <aside className="w-full lg:w-64 shrink-0 bg-slate-800 border border-slate-700 rounded-xl p-6 h-fit">
+          <aside className="w-full lg:w-64 shrink-0 bg-slate-800 border border-slate-700 rounded-xl p-6 h-fit lg:sticky lg:top-24">
 
             {/* Mobile Search */}
             <div className="relative mb-6 lg:hidden">
@@ -293,7 +304,7 @@ const Products = () => {
           <div className="flex-1">
 
             {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-slate-800 border border-slate-700 rounded-xl p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-slate-800 border border-slate-700 rounded-xl p-4 transition-colors hover:border-teal-400/40">
               <div className="flex items-center gap-3 flex-1">
                 {/* Desktop Search */}
                 <div className="hidden lg:flex relative flex-1 max-w-xs">
@@ -313,7 +324,7 @@ const Products = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg text-white text-sm px-3 py-2 outline-none focus:border-teal-400 w-full sm:w-auto"
+                className="bg-slate-900 border border-slate-700 rounded-lg text-white text-sm px-3 py-2 outline-none focus:border-teal-400 w-full sm:w-auto sm:min-w-[180px]"
               >
                 <option value="newest">Sort by: Newest</option>
                 <option value="price-low">Price: Low to High</option>
@@ -326,25 +337,25 @@ const Products = () => {
             {(selectedCategory !== 'All Products' || selectedBrand !== 'All Brands' || activePriceRange.min || activePriceRange.max || searchQuery) && (
               <div className="flex flex-wrap gap-2 mb-5">
                 {selectedCategory !== 'All Products' && (
-                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1.5 rounded-full">
                     {selectedCategory}
                     <button onClick={() => setSelectedCategory('All Products')} className="hover:text-white leading-none">&times;</button>
                   </span>
                 )}
                 {selectedBrand !== 'All Brands' && (
-                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1.5 rounded-full">
                     {selectedBrand}
                     <button onClick={() => setSelectedBrand('All Brands')} className="hover:text-white leading-none">&times;</button>
                   </span>
                 )}
                 {(activePriceRange.min || activePriceRange.max) && (
-                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1.5 rounded-full">
                     Rs. {activePriceRange.min || '0'} – {activePriceRange.max || '∞'}
                     <button onClick={clearPriceFilter} className="hover:text-white leading-none">&times;</button>
                   </span>
                 )}
                 {searchQuery && (
-                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 bg-teal-400/10 text-teal-400 border border-teal-400/30 text-xs font-semibold px-3 py-1.5 rounded-full">
                     "{searchQuery}"
                     <button onClick={() => setSearchQuery('')} className="hover:text-white leading-none">&times;</button>
                   </span>
@@ -359,21 +370,31 @@ const Products = () => {
                 {Array.from({length: 6}).map((_, i) => <SkeletonCard key={i} />)}
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="py-20 flex flex-col items-center gap-4 text-center">
-                <div className="text-5xl">&#128269;</div>
+              <div className="bg-slate-800 border border-slate-700 rounded-xl p-10 md:p-14 flex flex-col items-center gap-4 text-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-14 h-14 text-slate-600">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z" />
+                </svg>
                 <h3 className="text-lg font-bold text-white">No products found</h3>
-                <p className="text-slate-400 text-sm">Try a different keyword or browse all products.</p>
-                <button
-                  onClick={clearAllFilters}
-                  className="mt-2 bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-2 rounded-lg transition-all active:scale-95"
-                >
-                  Clear All Filters
-                </button>
+                <p className="text-slate-400 text-sm max-w-sm">Try a different keyword or adjust your filters.</p>
+                <div className="flex flex-wrap gap-3 justify-center mt-2">
+                  <button
+                    onClick={clearAllFilters}
+                    className="bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-2.5 rounded-lg transition-all active:scale-95"
+                  >
+                    Clear All Filters
+                  </button>
+                  <Link
+                    to="/products"
+                    onClick={clearAllFilters}
+                    className="bg-transparent border border-slate-600 hover:border-teal-400 text-slate-300 hover:text-teal-400 font-bold text-sm px-6 py-2.5 rounded-lg transition-all"
+                  >
+                    Browse All
+                  </Link>
+                </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className={`grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 ${gridLayoutClass}`}>
                 {filteredProducts.map((product, idx) => (
-                  /* Each ProductCard receives product + index props for staggered animation */
                   <ProductCard key={product.id} product={product} index={idx} />
                 ))}
               </div>

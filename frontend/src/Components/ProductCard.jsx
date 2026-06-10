@@ -91,7 +91,7 @@ const ProductCard = ({ product, compact = false, index = 0 }) => {
 
   return (
     <div
-      className="product-card-enter bg-slate-800 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-teal-400 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-teal-400/10 flex flex-col justify-between h-full"
+      className="product-card-enter bg-slate-800 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-teal-400 hover:-translate-y-1 hover:shadow-xl hover:shadow-teal-400/10 flex flex-col justify-between h-full"
       style={{ animationDelay: `${animDelay}ms` }}
     >
 

@@ -113,6 +113,8 @@ const ProductCarousel = ({ products }) => {
   const timerRef = useRef(null);
 
   const total = products.length;
+  const visibleCount = total <= 4 ? total : Math.min(3, total);
+  const allVisible = visibleCount >= total;
 
   const goTo = useCallback(
     (index) => {
@@ -127,17 +129,28 @@ const ProductCarousel = ({ products }) => {
   const next = useCallback(() => goTo(current + 1), [current, goTo]);
   const prev = useCallback(() => goTo(current - 1), [current, goTo]);
 
-  // Auto-advance every 3 seconds unless hovered
+  // Auto-advance every 3 seconds unless hovered or all products are visible
   useEffect(() => {
-    if (isHovered || total <= 1) return;
+    if (isHovered || total <= 1 || allVisible) return;
     timerRef.current = setInterval(next, 3000);
     return () => clearInterval(timerRef.current);
-  }, [isHovered, next, total]);
+  }, [isHovered, next, total, allVisible]);
 
   if (total === 0) return null;
 
-  // Build visible indices: current, current+1, current+2 (wrapping)
-  const visibleIndices = [0, 1, 2].map((offset) => (current + offset) % total);
+  const visibleIndices = Array.from(
+    { length: visibleCount },
+    (_, offset) => (current + offset) % total
+  );
+
+  const colClass =
+    visibleCount === 1
+      ? 'col-12'
+      : visibleCount === 2
+        ? 'col-12 col-sm-6'
+        : visibleCount === 4
+          ? 'col-12 col-sm-6 col-lg-3'
+          : 'col-12 col-sm-6 col-lg-4';
 
   return (
     <div
@@ -150,8 +163,8 @@ const ProductCarousel = ({ products }) => {
         {/* Desktop: show 3 cards */}
         {visibleIndices.map((idx, pos) => (
           <div
-            key={`${idx}-${pos}`}
-            className={`col-12 col-sm-6 col-lg-4 transition-all duration-400 ${
+            key={products[idx].id}
+            className={`${colClass} transition-all duration-400 ${
               transitioning ? 'opacity-60 scale-[0.98]' : 'opacity-100 scale-100'
             }`}
             style={{ transition: 'opacity 0.4s ease, transform 0.4s ease' }}
@@ -162,7 +175,7 @@ const ProductCarousel = ({ products }) => {
       </div>
 
       {/* ── Prev / Next Arrows ── */}
-      {total > 3 && (
+      {!allVisible && (
         <>
           <button
             onClick={prev}
@@ -182,7 +195,7 @@ const ProductCarousel = ({ products }) => {
       )}
 
       {/* ── Dot Indicators ── */}
-      {total > 1 && (
+      {!allVisible && total > 1 && (
         <div className="flex justify-center gap-2 mt-8">
           {products.map((_, idx) => (
             <button
@@ -200,7 +213,7 @@ const ProductCarousel = ({ products }) => {
       )}
 
       {/* ── Auto-play progress bar ── */}
-      {!isHovered && total > 1 && (
+      {!isHovered && !allVisible && total > 1 && (
         <div className="mt-3 h-0.5 bg-slate-700 rounded-full overflow-hidden">
           <div
             key={current}
@@ -384,7 +397,11 @@ const Home = () => {
             <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-white mb-2">
               Featured <span className="text-teal-400">Products</span>
             </h2>
-            <p className="text-slate-400 text-sm">Handpicked essentials — auto-browsing for you</p>
+            <p className="text-slate-400 text-sm">
+              {products.length > 4
+                ? 'Handpicked essentials — auto-browsing for you'
+                : 'Our full catalog — every product in one place'}
+            </p>
           </div>
 
           {products.length === 0 ? (
