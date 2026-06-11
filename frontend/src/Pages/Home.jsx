@@ -113,7 +113,8 @@ const ProductCarousel = ({ products }) => {
   const timerRef = useRef(null);
 
   const total = products.length;
-  const visibleCount = total <= 4 ? total : Math.min(3, total);
+  // Show at most 3 cards; never more than the total number of products
+  const visibleCount = Math.min(3, total);
   const allVisible = visibleCount >= total;
 
   const goTo = useCallback(
@@ -138,6 +139,8 @@ const ProductCarousel = ({ products }) => {
 
   if (total === 0) return null;
 
+  // Build visible indices without duplicates: take visibleCount items starting
+  // from current, wrapping only if there are enough unique products.
   const visibleIndices = Array.from(
     { length: visibleCount },
     (_, offset) => (current + offset) % total
@@ -148,9 +151,7 @@ const ProductCarousel = ({ products }) => {
       ? 'col-12'
       : visibleCount === 2
         ? 'col-12 col-sm-6'
-        : visibleCount === 4
-          ? 'col-12 col-sm-6 col-lg-3'
-          : 'col-12 col-sm-6 col-lg-4';
+        : 'col-12 col-sm-6 col-lg-4';
 
   return (
     <div
@@ -160,10 +161,9 @@ const ProductCarousel = ({ products }) => {
     >
       {/* ── Card Strip ── */}
       <div className="row g-4 overflow-hidden">
-        {/* Desktop: show 3 cards */}
         {visibleIndices.map((idx, pos) => (
           <div
-            key={products[idx].id}
+            key={`${products[idx].id}-slot-${pos}`}
             className={`${colClass} transition-all duration-400 ${
               transitioning ? 'opacity-60 scale-[0.98]' : 'opacity-100 scale-100'
             }`}

@@ -180,14 +180,14 @@ const ProductCard = ({ product, compact = false, index = 0 }) => {
               </button>
             </div>
           ) : (
-            /* Already in cart â€” show +/- stepper */
+            /* Already in cart — show +/- stepper */
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDecrease}
                 className="w-9 h-9 rounded-lg border border-slate-600 hover:border-rose-400 hover:bg-rose-400/10 text-slate-300 hover:text-rose-400 font-bold text-lg transition-all duration-200 active:scale-90 flex items-center justify-center"
                 aria-label="Decrease quantity"
               >
-                âˆ’
+                -
               </button>
               <div className="flex-1 text-center">
                 <span className="text-white font-bold text-sm">{qtyInCart}</span>
