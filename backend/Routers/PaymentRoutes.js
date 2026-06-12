@@ -17,6 +17,10 @@ const razorpay = new Razorpay({
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/create-order", verifyToken, async (req, res) => {
   try {
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return res.status(500).json({ message: "Payment gateway is not configured. Please contact support or use Cash on Delivery." });
+    }
+
     const { amount, currency = "INR" } = req.body;
 
     if (!amount || isNaN(amount) || Number(amount) <= 0) {

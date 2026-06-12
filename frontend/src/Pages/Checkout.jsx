@@ -203,6 +203,12 @@ const Checkout = () => {
       return;
     }
 
+    if (!rzpOrder || !rzpOrder.key) {
+      showToast('Payment gateway is not configured. Please use Cash on Delivery or try again later.', true);
+      setPlacing(false);
+      return;
+    }
+
     const prefill = {
       name:    user.firstName + ' ' + (user.lastName || ''),
       email:   user.email,
@@ -356,7 +362,7 @@ const Checkout = () => {
                           <span className="text-sm font-semibold text-white">{addr.name}</span>
                         </div>
                         <div className="text-xs text-slate-400">
-                          {addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}, {addr.city} â€” {addr.pincode}
+                          {addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}, {addr.city}{' — '}{addr.pincode}
                         </div>
                         <div className="text-xs text-slate-500 mt-0.5">Ph: {addr.phone}</div>
                       </div>
@@ -376,7 +382,7 @@ const Checkout = () => {
                   <div className="border border-slate-600 rounded-xl p-4 bg-slate-900/50">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-white font-semibold text-sm">New Address</h4>
-                      <button onClick={() => setAddingAddress(false)} className="text-slate-500 hover:text-white text-lg leading-none">Ã—</button>
+                      <button onClick={() => setAddingAddress(false)} className="text-slate-500 hover:text-white text-lg leading-none">{'×'}</button>
                     </div>
                     <form onSubmit={onAddAddress} className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <input value={newAddress.name}    onChange={(e) => setNewAddress((p) => ({ ...p, name: e.target.value }))}    placeholder="Full Name *"        className={inputCls} />
@@ -433,14 +439,14 @@ const Checkout = () => {
                     <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">Delivering To</div>
                     <div className="text-sm text-white font-semibold">{selectedAddress.name}</div>
                     <div className="text-xs text-slate-400 mt-0.5">
-                      {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ''}, {selectedAddress.city} â€” {selectedAddress.pincode}
+                      {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ''}, {selectedAddress.city}{' — '}{selectedAddress.pincode}
                     </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* â”€â”€ STEP 3: PAYMENT â”€â”€ */}
+            {/* —— STEP 3: PAYMENT —— */}
             {step === 3 && (
               <div>
                 <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
@@ -569,7 +575,7 @@ const Checkout = () => {
                       <>
                         <div className="text-sm font-semibold text-white">{selectedAddress.name} ({selectedAddress.label})</div>
                         <div className="text-xs text-slate-400 mt-0.5">
-                          {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ''}, {selectedAddress.city} â€” {selectedAddress.pincode}
+                          {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ''}, {selectedAddress.city}{' — '}{selectedAddress.pincode}
                         </div>
                         <div className="text-xs text-slate-500 mt-0.5">Ph: {selectedAddress.phone}</div>
                       </>
@@ -581,7 +587,7 @@ const Checkout = () => {
                   <div className="border border-slate-700 rounded-xl p-4">
                     <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">Payment Method</div>
                     <div className="text-sm text-white font-semibold">
-                      {paymentMethod === 'UPI' ? `UPI â€” ${upiId}` : paymentMethod === 'CARD' ? `Card ending in ${card.number.slice(-4)}` : 'Cash on Delivery'}
+                      {paymentMethod === 'UPI' ? `UPI — ${upiId}` : paymentMethod === 'CARD' ? `Card ending in ${card.number.slice(-4)}` : 'Cash on Delivery'}
                     </div>
                   </div>
 
@@ -589,7 +595,7 @@ const Checkout = () => {
                     <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">Items ({cartItems.length})</div>
                     {cartItems.slice(0, 3).map((item) => (
                       <div key={item.productId} className="flex justify-between text-xs text-slate-400 py-0.5">
-                        <span>{item.name} Ã— {item.qty}</span>
+                        <span>{item.name}{' × '}{item.qty}</span>
                         <span>Rs. {item.qty * item.price}</span>
                       </div>
                     ))}
@@ -614,10 +620,10 @@ const Checkout = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                       </svg>
-                      Placing Orderâ€¦
+                      Placing Order…
                     </span>
                   ) : (
-                    `Place Order Â· Rs. ${cartTotal}`
+                    `Place Order · Rs. ${cartTotal}`
                   )}
                 </button>
               </div>
@@ -632,20 +638,20 @@ const Checkout = () => {
                 }`}
                 disabled={step === 1}
               >
-                â† Back
+                {'←'} Back
               </button>
               {step < 4 && (
                 <button
                   onClick={goNext}
                   className="bg-teal-400 hover:bg-teal-500 text-slate-900 font-bold text-sm px-6 py-2.5 rounded-lg transition-all duration-200 active:scale-95"
                 >
-                  Continue â†’
+                  Continue {'→'}
                 </button>
               )}
             </div>
           </div>
 
-          {/* â”€â”€ Right: Order Summary (sticky) â”€â”€ */}
+          {/* —— Right: Order Summary (sticky) —— */}
           <aside className="bg-slate-800 border border-slate-700 rounded-xl p-5 lg:sticky lg:top-6">
             <h3 className="text-white font-bold text-base mb-4">Order Summary</h3>
 
@@ -653,7 +659,7 @@ const Checkout = () => {
             <div className="space-y-2 mb-4 max-h-52 overflow-y-auto pr-1">
               {cartItems.map((item) => (
                 <div key={item.productId} className="flex justify-between text-xs text-slate-400">
-                  <span className="line-clamp-1 flex-1 mr-2">{item.name} Ã— {item.qty}</span>
+                  <span className="line-clamp-1 flex-1 mr-2">{item.name} × {item.qty}</span>
                   <span className="shrink-0">Rs. {item.qty * item.price}</span>
                 </div>
               ))}
@@ -680,7 +686,7 @@ const Checkout = () => {
             </div>
 
             <Link to="/cart" className="block mt-4 text-xs text-teal-400 hover:underline text-center">
-              â† Edit Cart
+              {'←'} Edit Cart
             </Link>
           </aside>
 

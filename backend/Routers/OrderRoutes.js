@@ -11,7 +11,7 @@ const {
 const { verifyToken, verifyAdmin } = require("../Utils/authMiddleware");
 
 // ── Admin only ───────────────────────────────────────────────────────────────
-// NOTE: /stats and / (admin all) must come before /:orderId
+
 router.get("/stats",           verifyToken, verifyAdmin, GetOrderStats);
 router.get("/",                verifyToken, verifyAdmin, GetAllOrders);
 

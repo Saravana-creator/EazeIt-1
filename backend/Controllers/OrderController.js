@@ -57,7 +57,8 @@ const PlaceOrder = async (req, res) => {
       return res.status(400).json({ message: "Missing required order fields." });
     }
 
-    if (total != null && Number(total) !== expectedTotal) {
+    const roundTo2 = (n) => Math.round(Number(n) * 100) / 100;
+    if (total != null && roundTo2(total) !== roundTo2(expectedTotal)) {
       return res.status(400).json({ message: "Order total does not match expected amount." });
     }
 
