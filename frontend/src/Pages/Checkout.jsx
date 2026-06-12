@@ -5,6 +5,7 @@ import { useAuth } from '../Hooks';
 import { showToast } from '../Components/Toast';
 import { apiPlaceOrder, createRazorpayOrder, verifyRazorpayPayment, apiGetAddresses, apiAddAddress } from '../Utils/api';
 import { resolveProductImage } from '../Utils/image';
+import { FREE_DELIVERY_MIN } from '../Utils/storage';
 /** Dynamically loads the Razorpay checkout script */
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -677,7 +678,7 @@ const Checkout = () => {
                 </span>
               </div>
               {deliveryFee > 0 && (
-                <div className="text-[10px] text-slate-500">Add Rs. {Math.max(0, 500 - cartSubtotal)} more for free delivery</div>
+                <div className="text-[10px] text-slate-500">Add Rs. {Math.max(0, FREE_DELIVERY_MIN - cartSubtotal)} more for free delivery</div>
               )}
               <div className="flex justify-between text-white font-bold border-t border-slate-700 pt-2 text-base">
                 <span>Total</span>

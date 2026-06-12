@@ -2,8 +2,8 @@ const Order = require("../Models/OrderModel");
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@eazeit.in").toLowerCase();
 
-const DELIVERY_FREE_THRESHOLD = 500;
-const DELIVERY_FEE_AMOUNT = 10;
+const DELIVERY_FREE_THRESHOLD = 300;
+const DELIVERY_FEE_AMOUNT = 20;
 
 function calculateDeliveryFee(subtotal) {
   const amount = Number(subtotal) || 0;
