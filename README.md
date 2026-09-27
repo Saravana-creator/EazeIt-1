@@ -106,7 +106,6 @@ REACT_APP_EMAILJS_USER_ID=<your-emailjs-user-id>
 ## 🚀 Deployed Links
 
 - **Frontend (Vercel)**: [https://eaze-it-1.vercel.app/](https://eaze-it-1.vercel.app/)
-- **Backend API (Render)**: [https://eazeit-backend-59lg.onrender.com/api](https://eazeit-backend-59lg.onrender.com/api)
 
 ## 🌐 Deployment details
 
